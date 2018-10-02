@@ -1,64 +1,125 @@
 package au.edu.swin.ajass.views;
 
+import au.edu.swin.ajass.Utilities;
+import au.edu.swin.ajass.models.MenuItem;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Created by sky on 26/9/18.
  */
-public class ChoiceNutritionInfoView extends JPanel {
+public class ChoiceNutritionInfoView implements IView {
 
+    // Reference to MainView
+    private MainView main;
+
+    // View Elements
     private JPanel nutritionPanel;
     private JTable nutritionTable;
     private DefaultTableModel model;
 
-    public ChoiceNutritionInfoView()
-    {
+    ChoiceNutritionInfoView(MainView main) {
+        this.main = main;
+
+        // Create border outline.
         nutritionPanel = new JPanel();
         nutritionPanel.setLayout(new FlowLayout(FlowLayout.LEADING, 10, 5));
         nutritionPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 1),
                 "Menu Choices and Nutrition Information", TitledBorder.LEFT, TitledBorder.TOP));
         nutritionPanel.setPreferredSize(new Dimension(989, 150));
+
+        // Generate View elements.
+        generate();
     }
 
-    public JPanel returnPanel(String[][] data)
-    {
+    /**
+     * Populates the JTable with properties of MenuItem.
+     *
+     * @param food  Selected food, if any.
+     * @param drink Selected beverage, if any.
+     */
+    void populateTable(MenuItem food, MenuItem drink) {
+        reset();
+
+        // Calculate number of rows to display based on what data has been entered.
+        int numberOfRows = (food != null ? 1 : 0) + (drink != null ? 1 : 0) + 2;
+
+        // Create new list of data to enter.
+        String[][] itemData = new String[numberOfRows][];
+
+        // Populate with food information.
+        int pos = 0;
+        if (food != null) {
+            itemData[pos] = convertMenuItem(food);
+            pos++;
+        }
+
+        // Populate with drink information.
+        if (drink != null) {
+            itemData[pos] = convertMenuItem(drink);
+            pos++;
+        }
+
+        // Empty row.
+        itemData[pos] = convertMenuItem(null);
+        pos++;
+
+        // Populate with totals information.
+        itemData[pos] = convertMenuItem(Utilities.totalMenuItems(food, drink));
+
+        model.addColumn("Item Name");
+        model.addColumn("Energy (kJ)");
+        model.addColumn("Protein (g)");
+        model.addColumn("Carbohydrates (g)");
+        model.addColumn("Total Fat (g)");
+        model.addColumn("Fibre (g)");
+        model.addColumn("Price ($AUD)");
+
+        nutritionTable.getColumnModel().getColumn(0).setPreferredWidth(300);
+        nutritionTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+
+        // Add rows to the table model.
+        /* STREAM */
+        Arrays.stream(itemData).forEach(model::addRow);
+    }
+
+    /**
+     * @param toConvert The MenuItem to convert.
+     * @return MenuItem in an acceptable array format to display in a table model.
+     * @see #populateTable(MenuItem, MenuItem)
+     */
+    private String[] convertMenuItem(MenuItem toConvert) {
+        // Passing in null returns an empty row for the table.
+        if (toConvert == null) return new String[]{"", "", "", "", "", "", ""};
+        else
+            return new String[]{toConvert.getItemName(), String.format("%.2f", toConvert.getEnergy()), String.format("%.2f", toConvert.getProtein()), String.format("%.2f", toConvert.getCarbs()), String.format("%.2f", toConvert.getFat()), String.format("%.2f", toConvert.getFibre()), String.format("$%.0f",toConvert.getPrice())};
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public void generate() {
         model = new DefaultTableModel();
         nutritionTable = new JTable(model);
-        nutritionTable.setBackground(Color.white);
-        populateTable();
+        nutritionTable.setBackground(Color.WHITE);
         JScrollPane holder = new JScrollPane(nutritionTable);
         holder.setPreferredSize(new Dimension(950, 110));
 
-        TableColumn nameColumn = nutritionTable.getColumnModel().getColumn(0);
-        nameColumn.setPreferredWidth(300);
-        TableColumn totalFatColumn = nutritionTable.getColumnModel().getColumn(4);
-        totalFatColumn.setPreferredWidth(100);
-
         nutritionPanel.add(holder);
-
-
-        return nutritionPanel;
     }
 
-    private void populateTable()
-    {
-        String[][] itemData = {{"Sandwich chicken & salad","653","10.4","18.0","4.0","2.6","7.0"}};
+    @Override
+    public void reset() {
+        // Remove old values from table model.
+        model.setRowCount(0);
+        model.setColumnCount(0);
+    }
 
-        model.addColumn("Item Name");
-        model.addColumn("Energy");
-        model.addColumn("Protein");
-        model.addColumn("Carbohydrates");
-        model.addColumn("Total Fat");
-        model.addColumn("Fibre");
-        model.addColumn("Price");
-
-        for(int i = 0; i < itemData.length; i++){
-            model.addRow(new Object[]{itemData[i][0], itemData[i][1], itemData[i][2], itemData[i][3],
-                                        itemData[i][4], itemData[i][5], itemData[i][6]});
-        }
+    @Override
+    public JPanel getPanel() {
+        return nutritionPanel;
     }
 }
