@@ -6,10 +6,8 @@ import au.edu.swin.ajass.enums.MenuItemType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * This class loads and stores the values contained
@@ -35,7 +33,7 @@ public class MenuItems {
      * @param mealType The meal type we want.
      * @return The list of relevant menu items.
      */
-    public List<MenuItem> get(MenuItemType foodType, MealType mealType) {
+    public LinkedList<MenuItem> get(MenuItemType foodType, MealType mealType) {
         return menuItems.get(foodType).get(mealType);
     }
 

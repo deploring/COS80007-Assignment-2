@@ -1,0 +1,10 @@
+============== MEETING MINUTES ==============
+> Week 9
+
+(D1) Convert Maven project into modules (standalone, client, server)
+(D2) Decide features for extension
+(D3) Implement RMI Interface
+(D4) Implement basic Client interface
+(D5) Lambdas for validation
+(D6) Database structure
+(D7) Configuration file/system (to show specific panels, server IP, port, etc.)

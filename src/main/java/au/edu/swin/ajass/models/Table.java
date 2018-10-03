@@ -79,7 +79,7 @@ public class Table {
      * @param position A specific position in the linked list.
      * @return An order of a specific order state and position in a list. (is removed from list)
      */
-    public Order removeOrder(OrderState state, int position) {
+    private Order removeOrder(OrderState state, int position) {
         return orders.get(state).remove(position);
     }
 
