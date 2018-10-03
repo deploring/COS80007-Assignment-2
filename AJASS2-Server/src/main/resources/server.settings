@@ -1,0 +1,12 @@
+#############################
+# Server Configuration File #
+#############################
+# Modify settings as needed #
+# to make server function.  #
+#############################
+mysql_user=root
+mysql_pass=swinburne
+mysql_host=localhost
+mysql_port=3306
+mysql_database=database
+server_port=6969

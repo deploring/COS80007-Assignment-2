@@ -8,48 +8,17 @@
     <artifactId>AJASS2</artifactId>
     <version>0.1</version>
 
+    <packaging>pom</packaging>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.class>au.edu.swin.ajass.Main</main.class>
     </properties>
 
-    <build>
-        <finalName>${project.name}</finalName>
-        <sourceDirectory>${basedir}/src/main/java/</sourceDirectory>
-        <resources>
-            <!-- Include misc resource files -->
-            <resource>
-                <targetPath>.</targetPath>
-                <filtering>false</filtering>
-                <directory>${basedir}/src/main/resources/</directory>
-                <includes>
-                    <include>*</include>
-                </includes>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <!-- Compile the code using Java SE 1.8 -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <!-- After a successful compile, package into an executable JAR file. -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>au.edu.swin.ajass.Main</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <modules>
+        <module>AJASS2-Standalone</module>
+        <module>AJASS2-Interface</module>
+        <module>AJASS2-Client</module>
+        <module>AJASS2-Server</module>
+    </modules>
 </project>

@@ -2,9 +2,15 @@
 > Week 9
 
 (D1) Convert Maven project into modules (standalone, client, server)
+> D1 Complete
 (D2) Decide features for extension
-(D3) Implement RMI Interface
-(D4) Implement basic Client interface
+(D3) Implement RMI Interface?
+> A TCP Client/Server interface was chosen over RMI.
+> D3 Complete
+(D4.1) Implement basic Client/Server interface
+> D4.1 Complete
+(D4.2) Implement Communications between Client/Server
 (D5) Lambdas for validation
 (D6) Database structure
 (D7) Configuration file/system (to show specific panels, server IP, port, etc.)
+> D7 Partially Complete (no system for showing specific panels yet)

@@ -1,0 +1,8 @@
+#############################
+# Client Configuration File #
+#############################
+# Modify settings as needed #
+# to make client function.  #
+#############################
+server_hostname=0.0.0.0
+server_port=6969

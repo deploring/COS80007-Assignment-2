@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>au.edu.swin</groupId>
+        <artifactId>AJASS2</artifactId>
+        <version>0.1</version>
+    </parent>
+
+    <artifactId>AJASS2-Server</artifactId>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <main.class>au.edu.swin.ajass.Main</main.class>
+    </properties>
+
+    <build>
+        <finalName>${project.name}</finalName>
+        <sourceDirectory>src/main/java/</sourceDirectory>
+        <resources>
+            <!-- Include misc resource files -->
+            <resource>
+                <targetPath>.</targetPath>
+                <filtering>false</filtering>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>*</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <!-- Compile the code using Java SE 1.8 -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- After a successful compile, package into an executable JAR file. -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>au.edu.swin.ajass.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- Shade plugin: Used to include JDBC library in the JAR -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <artifactSet>
+                                <includes>
+                                    <!-- Include JDBC library inside compiled JAR -->
+                                    <include>mysql:mysql-connector-java</include>
+                                    <!-- Include AJASS2 library inside compiled JAR -->
+                                    <include>au.edu.swin:AJASS2-Interface</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- Our Database engine requires JDBC -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.6</version>
+        </dependency>
+
+        <!-- The server uses the same library that the client does. -->
+        <dependency>
+            <groupId>au.edu.swin</groupId>
+            <artifactId>AJASS2-Interface</artifactId>
+            <version>0.1</version>
+        </dependency>
+    </dependencies>
+</project>

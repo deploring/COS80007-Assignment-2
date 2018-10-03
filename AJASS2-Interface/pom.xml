@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>au.edu.swin</groupId>
+        <artifactId>AJASS2</artifactId>
+        <version>0.1</version>
+    </parent>
+
+    <artifactId>AJASS2-Interface</artifactId>
+
+    <build>
+        <finalName>${project.name}</finalName>
+        <sourceDirectory>src/main/java/</sourceDirectory>
+        <plugins>
+            <plugin>
+                <!-- Compile the code using Java SE 1.8 -->
+                <!-- We do not need to JAR this module as it is simply a library. -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
