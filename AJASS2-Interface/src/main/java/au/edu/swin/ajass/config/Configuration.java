@@ -60,7 +60,7 @@ public final class Configuration {
      */
     private InputStream getConfigStream(String fileName) throws IOException {
         // Find out what folder the JAR file is located in.
-        String parentDirectory = new File(Configuration.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
+        String parentDirectory = new File(Configuration.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent().replace("%20", " ");
 
         File config = new File(String.format("%s/%s", parentDirectory, fileName));
         if (!config.exists())
