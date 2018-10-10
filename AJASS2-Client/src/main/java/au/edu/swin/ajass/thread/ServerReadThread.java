@@ -14,23 +14,25 @@ import java.net.SocketException;
  */
 public class ServerReadThread implements Runnable {
 
+    private final ServerConnection server;
     private final ClientController client;
     private final ObjectInputStream input;
 
-    public ServerReadThread(ClientController client, ObjectInputStream input) {
+    public ServerReadThread(ServerConnection server, ClientController client, ObjectInputStream input) {
+        this.server = server;
         this.client = client;
         this.input = input;
     }
 
     public void run() {
         // The thread should stop running once the connection becomes invalid.
-        while (ServerConnection.CONNECTION_STATE == ServerConnection.VALID) {
+        while (client.isValidConnection(server)) {
             try {
-                // Read in a new message whenever one comers along.
+                // Read in a new message whenever one comes along.
                 client.newMessage(input.readObject());
             } catch (SocketException | EOFException e) {
                 // Connection was lost or timed out.
-                System.out.println(String.format("Connection lost with server: %s: %s", e.getClass().getTypeName(), e.getMessage()));
+                System.out.println(String.format("Unable to read from server: %s: %s", e.getClass().getTypeName(), e.getMessage()));
                 client.lostConnection();
             } catch (IOException | InterruptedException e) {
                 // Invalid data sent through with request.

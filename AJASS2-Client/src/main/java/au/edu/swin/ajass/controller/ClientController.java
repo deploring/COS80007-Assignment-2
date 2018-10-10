@@ -64,11 +64,18 @@ public class ClientController implements ISocketController {
     }
 
     /**
+     * @return True if this ServerConnection is the currently monitored one.
+     */
+    public boolean isValidConnection(ServerConnection toCheck) {
+        return server == toCheck;
+    }
+
+    /**
      * Sends a message back to the server.
      *
      * @param message The message to send to the server.
      */
-    void writeToServer(Object message) {
+    public void writeToServer(Object message) {
         if (!server.writeToServer(message))
             lostConnection();
     }
@@ -78,10 +85,9 @@ public class ClientController implements ISocketController {
      * server is, or is suspected to be invalid or dead.
      */
     public void lostConnection() {
-        // Nothing will happen unless the connection is state as VALID.
-        if (ServerConnection.CONNECTION_STATE == ServerConnection.VALID) {
-            // Set the state to RECONNECTING, this prevents duplicate reconnects.
-            ServerConnection.CONNECTION_STATE = ServerConnection.RECONNECTING;
+        // Nothing will happen unless the connection still exists.
+        if (server != null) {
+            server = null;
 
             // Disable the UI and reconnect as quickly as possible.
             main.connectionLost();

@@ -47,13 +47,13 @@ public final class MainView extends JFrame {
         getCustomerDetailsView().disableAll();
         getOrderStatusView().updateTables();
 
-        // Inform the user.
-        JOptionPane.showMessageDialog(null,
+        // Inform the user. Do so in a separate thread so nothing important is held up.
+       new Thread(() -> JOptionPane.showMessageDialog(null,
                 "The connection to the server has been lost. \n" +
                         "User controls are disabled until the program\n" +
                         "can re-establish a connection with the server.",
                 "Connection Lost",
-                JOptionPane.WARNING_MESSAGE);
+                JOptionPane.WARNING_MESSAGE)).start();
     }
 
     /**

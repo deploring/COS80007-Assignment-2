@@ -16,19 +16,13 @@ import java.net.SocketException;
  */
 public class ServerConnection {
 
-    // Static integer state identifiers.
-    public static final int DEFAULT = -1;
-    public static final int VALID = 0;
-    public static final int RECONNECTING = 1;
-
-    // State of the connection to the server. Static persists through re-connections.
-    public static int CONNECTION_STATE = DEFAULT;
-
+    private final ClientController client;
     private final Socket server;
     private ObjectOutputStream output;
     private ObjectInputStream input;
 
     public ServerConnection(ClientController client, Socket server) {
+        this.client = client;
         this.server = server;
         try {
             output = new ObjectOutputStream(server.getOutputStream());
@@ -41,16 +35,13 @@ public class ServerConnection {
         // Tell the console!
         System.out.println(String.format("Connection established with server (%s:%s)", server.getInetAddress(), server.getPort()));
 
-        // Set the connection state to valid.
-        CONNECTION_STATE = VALID;
-
         // Start a thread that listens for server messages.
-        Thread read = new Thread(new ServerReadThread(client, input));
+        Thread read = new Thread(new ServerReadThread(this, client, input));
         read.setDaemon(true);
         read.start();
 
         // Start a thread that sends periodic heartbeats to the server.
-        Thread beat = new Thread(new ClientHeartbeatThread(client, output));
+        Thread beat = new Thread(new ClientHeartbeatThread(this, client));
         beat.setDaemon(true);
         beat.start();
     }
@@ -63,7 +54,8 @@ public class ServerConnection {
      */
     public boolean writeToServer(Object message) {
         try {
-            output.writeObject(message);
+            if (client.isValidConnection(this))
+                output.writeObject(message);
         } catch (SocketException e) {
             System.out.println(String.format("Connection lost with server (%s): %s: %s", server.getInetAddress(), e.getClass().getTypeName(), e.getMessage()));
             // The socket has failed, return false so this connection can be destroyed.

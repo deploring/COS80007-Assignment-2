@@ -49,7 +49,7 @@ public class ClientHandlerThread implements Runnable {
                 try {
                     // We can assume the next message is a Communication enumerated type.
                     Communication command = (Communication) take;
-                    if (command != Communication.CLIENT_HEARTBEAT)
+                   // if (command != Communication.CLIENT_HEARTBEAT)
                         System.out.println(String.format("Command from Client: %s", command));
 
                     switch (command) {
