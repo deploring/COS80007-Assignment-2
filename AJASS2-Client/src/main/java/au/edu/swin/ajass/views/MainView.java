@@ -2,6 +2,7 @@ package au.edu.swin.ajass.views;
 
 import au.edu.swin.ajass.controller.ClientController;
 import au.edu.swin.ajass.models.MenuItem;
+import au.edu.swin.ajass.models.Table;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +24,47 @@ public final class MainView extends JFrame {
         createUI();
 
         // Initialise controller.
-        controller = new ClientController(this);
+        try {
+            controller = new ClientController(this);
+        } catch (IllegalStateException ex) {
+            // We have caught an illegal state. Close the program!
+            dispose();
+            System.exit(0);
+        }
+    }
+
+    /**
+     * Called by Client Controller when a connection is lost with
+     * the server. UI will be disabled and currently saved orders
+     * will be cleared.
+     */
+    public void connectionLost() {
+        // Clear the current orders as they are no longer useful.
+        getController().getMenuController().getTables().forEach(Table::clear);
+
+        // Disable input by user to prevent further errors, until connection is re-established.
+        getButtonView().disableAll();
+        getCustomerDetailsView().disableAll();
+        getOrderStatusView().updateTables();
+
+        // Inform the user.
+        JOptionPane.showMessageDialog(null,
+                "The connection to the server has been lost. \n" +
+                        "User controls are disabled until the program\n" +
+                        "can re-establish a connection with the server.",
+                "Connection Lost",
+                JOptionPane.WARNING_MESSAGE);
+    }
+
+    /**
+     * Called by Client Controller when the connection to the
+     * server is re-established. UI is re-enabled and orders
+     * will be sent through from the server.
+     */
+    public void connectionReEstablished() {
+        getButtonView().reEnableAll();
+        getCustomerDetailsView().reEnableAll();
+        getOrderStatusView().updateTables();
     }
 
     /**

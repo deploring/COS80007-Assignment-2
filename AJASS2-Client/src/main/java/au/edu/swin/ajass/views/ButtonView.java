@@ -218,6 +218,28 @@ public class ButtonView implements IView {
         billButton.setEnabled(true);
     }
 
+    /**
+     * Called when the connection to the server has been severed
+     * or an error has occurred. Prevents input by user.
+     */
+    void disableAll() {
+        enterButton.setEnabled(false);
+        displayChoicesButton.setEnabled(false);
+        displayOrderButton.setEnabled(false);
+        prepareButton.setEnabled(false);
+    }
+
+    /**
+     * Called when the connection to the server has been
+     * re-established and normal user input can resume.
+     */
+    void reEnableAll() {
+        enterButton.setEnabled(true);
+        displayChoicesButton.setEnabled(true);
+        displayOrderButton.setEnabled(true);
+        prepareButton.setEnabled(true);
+    }
+
     @Override
     public void reset() {
         billButton.setEnabled(false);

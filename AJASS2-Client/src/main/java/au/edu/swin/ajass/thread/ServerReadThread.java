@@ -1,9 +1,12 @@
 package au.edu.swin.ajass.thread;
 
 import au.edu.swin.ajass.controller.ClientController;
+import au.edu.swin.ajass.models.ServerConnection;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.SocketException;
 
 /**
  * This Thread listens for incoming messages from the
@@ -20,11 +23,17 @@ public class ServerReadThread implements Runnable {
     }
 
     public void run() {
-        while (true) {
+        // The thread should stop running once the connection becomes invalid.
+        while (ServerConnection.CONNECTION_STATE == ServerConnection.VALID) {
             try {
                 // Read in a new message whenever one comers along.
                 client.newMessage(input.readObject());
+            } catch (SocketException | EOFException e) {
+                // Connection was lost or timed out.
+                System.out.println(String.format("Connection lost with server: %s: %s", e.getClass().getTypeName(), e.getMessage()));
+                client.lostConnection();
             } catch (IOException | InterruptedException e) {
+                // Invalid data sent through with request.
                 System.out.println(String.format("Unable to read input: %s: %s", e.getClass().getTypeName(), e.getMessage()));
                 return;
             } catch (ClassNotFoundException e) {

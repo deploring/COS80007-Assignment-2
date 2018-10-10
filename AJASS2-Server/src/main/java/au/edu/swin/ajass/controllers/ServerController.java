@@ -31,7 +31,7 @@ public class ServerController implements ISocketController {
 
         // Start a thread to listen for incoming client connections.
         Thread accept = new Thread(new AcceptThread(this, config.getInteger("server_port")));
-        accept.setDaemon(false); //TODO: make this daemon again
+        accept.setDaemon(false); // This thread is not daemon since it continuously listens for ports.
         accept.start();
 
         // Start a thread to handle messages sent from clients.

@@ -1,6 +1,7 @@
 package au.edu.swin.ajass.models;
 
 import au.edu.swin.ajass.controller.ClientController;
+import au.edu.swin.ajass.thread.ClientHeartbeatThread;
 import au.edu.swin.ajass.thread.ServerReadThread;
 
 import java.io.IOException;
@@ -14,6 +15,14 @@ import java.net.SocketException;
  * the server. It can
  */
 public class ServerConnection {
+
+    // Static integer state identifiers.
+    public static final int DEFAULT = -1;
+    public static final int VALID = 0;
+    public static final int RECONNECTING = 1;
+
+    // State of the connection to the server. Static persists through re-connections.
+    public static int CONNECTION_STATE = DEFAULT;
 
     private final Socket server;
     private ObjectOutputStream output;
@@ -32,10 +41,18 @@ public class ServerConnection {
         // Tell the console!
         System.out.println(String.format("Connection established with server (%s:%s)", server.getInetAddress(), server.getPort()));
 
+        // Set the connection state to valid.
+        CONNECTION_STATE = VALID;
+
         // Start a thread that listens for server messages.
         Thread read = new Thread(new ServerReadThread(client, input));
         read.setDaemon(true);
         read.start();
+
+        // Start a thread that sends periodic heartbeats to the server.
+        Thread beat = new Thread(new ClientHeartbeatThread(client, output));
+        beat.setDaemon(true);
+        beat.start();
     }
 
     /**

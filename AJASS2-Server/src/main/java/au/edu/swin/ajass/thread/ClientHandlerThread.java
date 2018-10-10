@@ -49,7 +49,8 @@ public class ClientHandlerThread implements Runnable {
                 try {
                     // We can assume the next message is a Communication enumerated type.
                     Communication command = (Communication) take;
-                    System.out.println(String.format("Command from Client: %s", command));
+                    if (command != Communication.CLIENT_HEARTBEAT)
+                        System.out.println(String.format("Command from Client: %s", command));
 
                     switch (command) {
                         // The client has updated an order.
@@ -152,6 +153,9 @@ public class ClientHandlerThread implements Runnable {
 
                             // Send a sentinel communication to mark the end of the sending.
                             client.writeToClient(Communication.SENTINEL);
+                            break;
+                        case CLIENT_HEARTBEAT:
+                            // We have received a heartbeat! This will stop the connection from timing out...
                             break;
                         default:
                             // The client has sent an invalid Communication.

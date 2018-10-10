@@ -102,6 +102,28 @@ public class CustomerDetailsView implements IView {
         mealButtons.clearSelection();
     }
 
+    /**
+     * Called when the connection to the server has been severed
+     * or an error has occurred. Prevents input by user.
+     */
+    void disableAll() {
+        custName.setEnabled(false);
+        tableNum.setEnabled(false);
+        for (JRadioButton button : buttons)
+            button.setEnabled(false);
+    }
+
+    /**
+     * Called when the connection to the server has been
+     * re-established and normal user input can resume.
+     */
+    void reEnableAll() {
+        custName.setEnabled(true);
+        tableNum.setEnabled(true);
+        for (JRadioButton button : buttons)
+            button.setEnabled(true);
+    }
+
     @Override
     public JPanel getPanel() {
         return detailsPanel;
