@@ -34,10 +34,12 @@ public final class ServerMenuController {
     private MenuItems itemCache;
 
     ServerMenuController(ServerController server) {
+        System.out.println("> Creating table models and collections...");
         this.server = server;
         tables = new HashMap<>();
         itemCache = new MenuItems();
         createTables();
+        System.out.println("...success!");
     }
 
     /**

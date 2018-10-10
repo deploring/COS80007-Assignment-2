@@ -35,10 +35,10 @@ public class ClientReadThread implements Runnable {
                 if (in instanceof Communication && in != Communication.SENTINEL)
                     server.newMessage(client);
             } catch (IOException | InterruptedException e) {
-                System.out.println(String.format("Unable to read input: %s: %s", e.getClass().getTypeName(), e.getMessage()));
+                System.out.println(String.format("!! Unable to read input: %s: %s", e.getClass().getTypeName(), e.getMessage()));
                 return;
             } catch (ClassNotFoundException e) {
-                System.out.println("Unsupported or unknown class passed through as input?");
+                System.out.println("!! Unsupported or unknown class passed through as input?");
                 return;
             }
         }

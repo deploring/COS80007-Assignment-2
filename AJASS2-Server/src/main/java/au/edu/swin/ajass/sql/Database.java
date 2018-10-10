@@ -16,10 +16,10 @@ public class Database {
     private Connection connection;
 
     /**
-     * @param user MySQL server username.
-     * @param pass MySQL server password.
+     * @param user     MySQL server username.
+     * @param pass     MySQL server password.
      * @param hostname MySQL server's hostname.
-     * @param port MySQL server port.
+     * @param port     MySQL server port.
      * @param database Name of schema/database on MySQL server.
      */
     public Database(String user, String pass, String hostname, String port, String database) {
@@ -119,5 +119,50 @@ public class Database {
             // Nothing bad should happen in normal operation, so just print the stack trace.
         }
         return null;
+    }
+
+    /**
+     * Creates the required schema tables if they do not exist.
+     */
+    public void createTables() throws SQLException {
+        DatabaseMetaData meta = connection.getMetaData();
+
+        // Check if the `menuItems` table exists, and then create it if not.
+        ResultSet check1 = meta.getTables(null, null, "menuItems", null);
+        if (!check1.next()) {
+            System.out.println(">>> Creating `menuItems` table...");
+            connection.prepareStatement(
+                    "CREATE TABLE `menuItems` (" +
+                            "`PLU` SMALLINT UNSIGNED NOT NULL," +
+                            "`item_name` VARCHAR(255) NOT NULL," +
+                            "`price` DOUBLE NOT NULL," +
+                            "`energy` DOUBLE NOT NULL," +
+                            "`protein` DOUBLE NOT NULL," +
+                            "`carbs` DOUBLE NOT NULL," +
+                            "`fat` DOUBLE NOT NULL," +
+                            "`fibre` DOUBLE NOT NULL," +
+                            "PRIMARY KEY (`PLU`));"
+            ).executeUpdate();
+        }
+        check1.close();
+
+        // Check if the `orders` table exists, and then create it if not.
+        ResultSet check2 = meta.getTables(null, null, "orders", null);
+        if (!check2.next()) {
+            System.out.println(">>> Creating `orders` table...");
+            connection.prepareStatement(
+                    "CREATE TABLE `orders` (" +
+                            "`order_id` INT NOT NULL AUTO_INCREMENT," +
+                            "`table_number` TINYINT UNSIGNED NOT NULL," +
+                            "`order_status` ENUM ('WAITING', 'SERVED', 'BILLED') NOT NULL," +
+                            "`customer_name` VARCHAR(255) NOT NULL," +
+                            "`food` SMALLINT UNSIGNED NOT NULL," +
+                            "`beverage` SMALLINT UNSIGNED NOT NULL," +
+                            "PRIMARY KEY (`order_id`)," +
+                            "FOREIGN KEY (`food`) REFERENCES menuItems(`PLU`)," +
+                            "FOREIGN KEY (`beverage`) REFERENCES menuItems(`PLU`));"
+            ).executeUpdate();
+        }
+        check2.close();
     }
 }

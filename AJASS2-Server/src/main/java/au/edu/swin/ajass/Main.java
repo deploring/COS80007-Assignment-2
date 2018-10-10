@@ -7,7 +7,9 @@ import au.edu.swin.ajass.controllers.ServerController;
  */
 public class Main {
 
-    public static void main(String[] args ){
+    public static void main(String[] args){
+        System.out.println("-------------------- HELLO! --------------------");
+        System.out.println("> Now attempting to load AJASS2-Server v0.1...");
         // Just simply pass off everything to the Server Controller.
         new ServerController();
     }

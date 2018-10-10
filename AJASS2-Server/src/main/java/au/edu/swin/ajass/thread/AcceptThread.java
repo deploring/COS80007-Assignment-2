@@ -17,9 +17,11 @@ public class AcceptThread implements Runnable {
     private ServerSocket socket;
 
     public AcceptThread(ServerController server, int serverPort) {
+        System.out.println("> Opening port to listen to incoming client connections...");
         this.server = server;
         try {
             socket = new ServerSocket(serverPort);
+            System.out.println("...success!");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -34,7 +36,7 @@ public class AcceptThread implements Runnable {
                 server.acceptConnection(newConnection);
 
                 // Tell the console!
-                System.out.println(String.format("New incoming connection from %s:%s", clientSocket.getInetAddress(), clientSocket.getPort()));
+                System.out.println(String.format("> New incoming connection from %s:%s", clientSocket.getInetAddress(), clientSocket.getPort()));
             }
         } catch (IOException e) {
             e.printStackTrace();

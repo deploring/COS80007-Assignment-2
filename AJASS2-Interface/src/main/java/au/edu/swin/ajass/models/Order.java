@@ -14,7 +14,6 @@ public final class Order implements Serializable {
 
     private String customerName;
     private MenuItem food, beverage;
-    private boolean billed;
 
     /**
      * @param customerName Name of the customer who made the order.
@@ -25,7 +24,6 @@ public final class Order implements Serializable {
         this.customerName = customerName;
         this.food = food;
         this.beverage = beverage;
-        this.billed = false;
     }
 
     /**
@@ -43,19 +41,11 @@ public final class Order implements Serializable {
      */
     public Order(String customerName, int state, MenuItem item) {
         this.customerName = customerName;
-        this.billed = false;
 
         if (state == FOOD_ONLY)
             this.food = item;
         else if (state == BEVERAGE_ONLY)
             this.beverage = item;
-    }
-
-    /**
-     * Marks the Order as billed.
-     */
-    public void bill() {
-        billed = true;
     }
 
     /* Getters */
@@ -70,9 +60,5 @@ public final class Order implements Serializable {
 
     public MenuItem getBeverage() {
         return beverage;
-    }
-
-    public boolean isBilled() {
-        return billed;
     }
 }
