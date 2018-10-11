@@ -227,6 +227,7 @@ public class ButtonView implements IView {
         displayChoicesButton.setEnabled(false);
         displayOrderButton.setEnabled(false);
         prepareButton.setEnabled(false);
+        billButton.setEnabled(false);
     }
 
     /**
@@ -237,7 +238,6 @@ public class ButtonView implements IView {
         enterButton.setEnabled(true);
         displayChoicesButton.setEnabled(true);
         displayOrderButton.setEnabled(true);
-        prepareButton.setEnabled(true);
     }
 
     @Override

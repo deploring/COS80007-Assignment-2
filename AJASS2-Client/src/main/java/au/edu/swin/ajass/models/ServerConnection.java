@@ -35,15 +35,23 @@ public class ServerConnection {
         // Tell the console!
         System.out.println(String.format("Connection established with server (%s:%s)", server.getInetAddress(), server.getPort()));
 
-        // Start a thread that listens for server messages.
-        Thread read = new Thread(new ServerReadThread(this, client, input));
-        read.setDaemon(true);
-        read.start();
-
         // Start a thread that sends periodic heartbeats to the server.
         Thread beat = new Thread(new ClientHeartbeatThread(this, client));
         beat.setDaemon(true);
         beat.start();
+    }
+
+    /**
+     * The thread should start after the ServerConnection object is initialised.
+     * If it does not, the consequences can lead to the read thread being terminated
+     * early. This means that the client will not listen to incoming messages.
+     */
+    public void postStartReaderThread(){
+        // Start a thread that listens for server messages. Lowest priority.
+        Thread read = new Thread(new ServerReadThread(this, client, input));
+        read.setPriority(1);
+        read.setDaemon(true);
+        read.start();
     }
 
     /**

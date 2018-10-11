@@ -30,6 +30,7 @@ public class ServerController implements ISocketController {
     private ServerMenuController menu;
 
     public ServerController() {
+
         menu = new ServerMenuController(this);
         clients = Collections.synchronizedList(new ArrayList<>());
 
@@ -52,14 +53,21 @@ public class ServerController implements ISocketController {
 
             System.out.println(">> Checking tables...");
             database.createTables();
-       } catch (IllegalStateException e) {
+            System.out.println(">> Loading pre-existing menu items...");
+            database.loadMenuItems(menu.getMenuItems());
+            // Also load any locally-stored menu items in case the database doesn't have them.
+            menu.getMenuItems().load();
+
+            System.out.println(">> Loading non-billed orders...");
+            database.loadOrders(menu);
+        } catch (IllegalStateException e) {
             // Database was not loaded. Do not continue with execution.
             System.out.println(String.format("!! Unable to connect to database: %s", e.getMessage()));
             System.exit(0);
             return;
         } catch (SQLException e) {
             // Database tables were not created.
-            System.out.println(String.format("!! Unable to create database tables: %s", e.getMessage()));
+            System.out.println(String.format("!! Unable to load from database: %s", e.getMessage()));
             System.exit(0);
             return;
         }
@@ -109,5 +117,12 @@ public class ServerController implements ISocketController {
      */
     public ServerMenuController getMenuController() {
         return menu;
+    }
+
+    /**
+     * @return An instance of the database handler.
+     */
+    public Database getDatabase() {
+        return database;
     }
 }

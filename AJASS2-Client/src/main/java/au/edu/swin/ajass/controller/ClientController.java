@@ -36,6 +36,7 @@ public class ClientController implements ISocketController {
 
         try {
             server = new ServerConnection(this, new Socket(config.getString("server_hostname"), config.getInteger("server_port")));
+            server.postStartReaderThread();
         } catch (IOException e) {
             e.printStackTrace();
             // They couldn't connect. Throw an illegal state so the program does not continue loading up.
@@ -106,6 +107,7 @@ public class ClientController implements ISocketController {
         try {
             // Re-create a new ServerConnection. This will automatically set CONNECTION_STATE back to VALID if successful.
             server = new ServerConnection(this, new Socket(config.getString("server_hostname"), config.getInteger("server_port")));
+            server.postStartReaderThread();
 
             // Since we have re-connected, get the server to send through the current orders again.
             writeToServer(Communication.CLIENT_WANT_ORDERS);

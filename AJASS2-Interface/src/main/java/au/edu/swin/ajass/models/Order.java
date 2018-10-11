@@ -12,6 +12,7 @@ public final class Order implements Serializable {
     public static int FOOD_ONLY = 0;
     public static int BEVERAGE_ONLY = 1;
 
+    private int orderID;
     private String customerName;
     private MenuItem food, beverage;
 
@@ -20,7 +21,8 @@ public final class Order implements Serializable {
      * @param food         The food that was ordered.
      * @param beverage     The beverage that was ordered.
      */
-    public Order(String customerName, MenuItem food, MenuItem beverage) {
+    public Order(int orderID, String customerName, MenuItem food, MenuItem beverage) {
+        this.orderID = orderID;
         this.customerName = customerName;
         this.food = food;
         this.beverage = beverage;
@@ -39,7 +41,8 @@ public final class Order implements Serializable {
      * @param state        Did they only order food or only order a beverage?
      * @param item         The item ordered.
      */
-    public Order(String customerName, int state, MenuItem item) {
+    public Order(int orderID, String customerName, int state, MenuItem item) {
+        this.orderID = orderID;
         this.customerName = customerName;
 
         if (state == FOOD_ONLY)
@@ -60,5 +63,9 @@ public final class Order implements Serializable {
 
     public MenuItem getBeverage() {
         return beverage;
+    }
+
+    public int getOrderID() {
+        return orderID;
     }
 }

@@ -6,7 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by Heartist on 3/10/2018.
+ * Main class for the Client.
+ * Starts up the MainView, which in turn starts everything else.
  */
 public class Main {
 
