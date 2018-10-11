@@ -29,6 +29,7 @@ public class ServerHandlerThread implements Runnable {
         this.client = client;
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     public void run() {
         while (true) {
             try {

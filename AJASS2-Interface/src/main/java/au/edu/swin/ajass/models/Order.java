@@ -4,7 +4,14 @@ import java.io.Serializable;
 
 /**
  * Order is a model that represents a person's order.
- * Orders are contained within Tables.
+ * Orders are contained within Tables, and are ordered
+ * by a customer (name), and contain a food menu item
+ * as well as a beverage menu item.
+ *
+ * @author Joshua Skinner
+ * @author Bradley Chick
+ * @version 1.1
+ * @since 0.1
  */
 public final class Order implements Serializable {
 

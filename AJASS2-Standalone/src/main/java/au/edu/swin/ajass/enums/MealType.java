@@ -1,10 +1,10 @@
 package au.edu.swin.ajass.enums;
 
 /**
- * Created by sky on 26/9/18.
+ * Represents all the different meal types a menu item can have.
  */
 public enum MealType {
     BREAKFAST,
     LUNCH,
-    DINNER;
+    DINNER
 }

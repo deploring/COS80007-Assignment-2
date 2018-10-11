@@ -95,6 +95,7 @@ public class Database {
 
     /**
      * Closes the MySQL connection. Does not attempt to re-open.
+     * Unused.
      */
     public void close() {
         // Only close the connection if there is a connection to close.
@@ -116,6 +117,7 @@ public class Database {
      * @return The Prepared Statement.
      * @see PreparedStatement
      */
+    @SuppressWarnings("WeakerAccess")
     public PreparedStatement prepare(String query) {
         // Validate connection first.
         validate();
@@ -299,7 +301,7 @@ public class Database {
      *
      * @param orderID  The unique ID of the order.
      * @param newState The state of the order.
-     * @throws SQLException
+     * @throws SQLException The query may be invalid.
      */
     public void updateOrder(int orderID, OrderState newState) throws SQLException {
         PreparedStatement pstmt = prepare("UPDATE `orders` SET `order_status`=? WHERE `order_id`=?");

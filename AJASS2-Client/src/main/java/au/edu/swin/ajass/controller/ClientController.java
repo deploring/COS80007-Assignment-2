@@ -12,7 +12,15 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Created by Heartist on 3/10/2018.
+ * The Client Controller handles connection to the server,
+ * as well as configuration settings, and of course, the
+ * menu controller.
+ *
+ * @author Joshua Skinner
+ * @author Bradley Chick
+ * @version 1.0
+ * @since 0.1
+ * @see ServerHandlerThread
  */
 public class ClientController implements ISocketController {
 

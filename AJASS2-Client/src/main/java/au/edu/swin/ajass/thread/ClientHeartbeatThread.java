@@ -8,6 +8,9 @@ import au.edu.swin.ajass.models.ServerConnection;
  * This Thread periodically sends a HEARTBEAT communication
  * to the server to keep the connection from dying from timeout.
  *
+ * @author Joshua Skinner
+ * @version 1.0
+ * @author 0.1
  * @see au.edu.swin.ajass.enums.Communication#CLIENT_HEARTBEAT
  */
 public class ClientHeartbeatThread implements Runnable {

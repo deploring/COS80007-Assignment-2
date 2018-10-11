@@ -10,6 +10,11 @@ import java.io.ObjectInputStream;
 /**
  * This Thread listens for incoming messages from
  * clients and stores them in the queue for processing.
+ *
+ * @author Joshua Skinner
+ * @version 1.0
+ * @since 0.1
+ * @see ClientConnection
  */
 public class ClientReadThread implements Runnable {
 

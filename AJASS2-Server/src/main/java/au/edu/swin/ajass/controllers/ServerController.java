@@ -14,6 +14,12 @@ import java.util.*;
  * server and clients. Changes made by clients are reflected
  * on the server-side models, and then are reflected back
  * on all client-side models.
+ *
+ * @author Joshua Skinner
+ * @author Bradley Chick
+ * @version 1.0
+ * @since 0.1
+ * @see ClientHandlerThread
  */
 public class ServerController implements ISocketController {
 

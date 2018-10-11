@@ -28,7 +28,6 @@ import java.util.Map;
  * @see au.edu.swin.ajass.enums.Communication
  * @since 0.1
  */
-@SuppressWarnings("UnusedAssignment")
 public class ClientHandlerThread implements Runnable {
 
     private final ServerController server;
@@ -37,6 +36,7 @@ public class ClientHandlerThread implements Runnable {
         this.server = server;
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     public void run() {
         while (true) {
             try {

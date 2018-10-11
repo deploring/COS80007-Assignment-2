@@ -13,6 +13,16 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+/**
+ * The bottom-most view that contains all the control buttons.
+ * These buttons have numerous purposes, as outlined in the
+ * specifications.
+ *
+ * @author Keagan Foster
+ * @author Joshua Skinner
+ * @version 1
+ * @author 0.1
+ */
 public class ButtonView implements IView {
 
     // Reference to MainView
@@ -22,7 +32,7 @@ public class ButtonView implements IView {
     private JPanel buttonPanel;
     private JButton enterButton, displayChoicesButton, displayOrderButton, prepareButton, billButton, clearButton, quitButton;
 
-    public ButtonView(MainView main) {
+    ButtonView(MainView main) {
         this.main = main;
 
         // Create border outline.

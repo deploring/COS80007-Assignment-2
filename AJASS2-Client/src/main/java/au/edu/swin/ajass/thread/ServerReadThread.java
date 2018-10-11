@@ -9,8 +9,13 @@ import java.io.ObjectInputStream;
 import java.net.SocketException;
 
 /**
- * This Thread listens for incoming messages from the
- * server and stores them in the queue for processing.
+ * This Thread listens for incoming messages from the server
+ * and stores them in the blocking queue for processing.
+ *
+ * @author Joshua Skinner
+ * @version 1.0
+ * @since 0.1
+ * @see ServerConnection
  */
 public class ServerReadThread implements Runnable {
 

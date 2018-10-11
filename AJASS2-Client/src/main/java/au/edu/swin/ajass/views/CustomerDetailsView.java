@@ -13,6 +13,11 @@ import java.awt.*;
  * <li>Customer's Details</li>
  * <li>Meal Type</li>
  * </ul>
+ *
+ * @author Keagan Foster
+ * @author Joshua Skinner
+ * @version 1.0
+ * @since 0.1
  */
 public class CustomerDetailsView implements IView {
 
@@ -90,7 +95,7 @@ public class CustomerDetailsView implements IView {
      *
      * @see ButtonView#generate()
      */
-    public void softReset() {
+    void softReset() {
         custName.setText("");
         mealButtons.clearSelection();
     }
@@ -131,7 +136,7 @@ public class CustomerDetailsView implements IView {
 
     /* Getters */
 
-    public String getCustomerName() {
+    String getCustomerName() {
         return custName.getText();
     }
 
@@ -139,7 +144,7 @@ public class CustomerDetailsView implements IView {
      * @throws NumberFormatException Table number may not be a number.
      * @throws IllegalStateException Nothing may be entered.
      */
-    public Integer getTableNumber() throws NumberFormatException, IllegalStateException {
+    Integer getTableNumber() throws NumberFormatException, IllegalStateException {
         if (tableNum.getText().equals("")) throw new IllegalStateException();
         return Integer.parseInt(tableNum.getText());
     }
@@ -147,7 +152,7 @@ public class CustomerDetailsView implements IView {
     /**
      * @throws IllegalStateException Nothing may be selected.
      */
-    public MealType getMealType() throws IllegalStateException {
+    private MealType getMealType() throws IllegalStateException {
         for (JRadioButton button : buttons)
             if (button.isSelected())
                 return MealType.valueOf(button.getText().toUpperCase());

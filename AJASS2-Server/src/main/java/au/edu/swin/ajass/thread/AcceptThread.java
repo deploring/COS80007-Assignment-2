@@ -9,7 +9,13 @@ import java.net.Socket;
 
 /**
  * This thread listens for, and establishes connections with
- * clients, it does not perform any data exchange.
+ * clients, it does not perform any data exchange. Connections
+ * are converted into ClientConnections, which then run their
+ * own worker threads to handling receiving data.
+ *
+ * @author Joshua Skinner
+ * @version 1.0
+ * @since 0.1
  */
 public class AcceptThread implements Runnable {
 
@@ -27,6 +33,7 @@ public class AcceptThread implements Runnable {
         }
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     public void run() {
         try {
             while (true) {

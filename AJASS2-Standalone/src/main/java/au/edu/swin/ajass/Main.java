@@ -6,7 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- *yo bro
+ * Main class for the Standalone.
+ * Starts up the MainView, which in turn starts everything else.
  */
 public final class Main {
 

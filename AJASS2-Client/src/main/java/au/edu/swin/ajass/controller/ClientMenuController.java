@@ -35,7 +35,7 @@ public final class ClientMenuController {
     // List of table numbers mapped to tables.
     private HashMap<Integer, Table> tables;
 
-    public ClientMenuController(ClientController client) {
+    ClientMenuController(ClientController client) {
         this.client = client;
         tables = new HashMap<>();
         menuItems = new HashMap<>();
