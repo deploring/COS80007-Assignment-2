@@ -13,6 +13,16 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+/**
+ * The bottom-most view that contains all the control buttons.
+ * These buttons have numerous purposes, as outlined in the
+ * specifications.
+ *
+ * @author Keagan Foster
+ * @author Joshua Skinner
+ * @version 1
+ * @author 0.1
+ */
 public class ButtonView implements IView {
 
     // Reference to MainView
@@ -22,7 +32,7 @@ public class ButtonView implements IView {
     private JPanel buttonPanel;
     private JButton enterButton, displayChoicesButton, displayOrderButton, prepareButton, billButton, clearButton, quitButton;
 
-    public ButtonView(MainView main) {
+    ButtonView(MainView main) {
         this.main = main;
 
         // Create border outline.
@@ -216,6 +226,28 @@ public class ButtonView implements IView {
      */
     void enableBillButton() {
         billButton.setEnabled(true);
+    }
+
+    /**
+     * Called when the connection to the server has been severed
+     * or an error has occurred. Prevents input by user.
+     */
+    void disableAll() {
+        enterButton.setEnabled(false);
+        displayChoicesButton.setEnabled(false);
+        displayOrderButton.setEnabled(false);
+        prepareButton.setEnabled(false);
+        billButton.setEnabled(false);
+    }
+
+    /**
+     * Called when the connection to the server has been
+     * re-established and normal user input can resume.
+     */
+    void reEnableAll() {
+        enterButton.setEnabled(true);
+        displayChoicesButton.setEnabled(true);
+        displayOrderButton.setEnabled(true);
     }
 
     @Override

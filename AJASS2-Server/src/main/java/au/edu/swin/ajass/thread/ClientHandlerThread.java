@@ -28,7 +28,6 @@ import java.util.Map;
  * @see au.edu.swin.ajass.enums.Communication
  * @since 0.1
  */
-@SuppressWarnings("UnusedAssignment")
 public class ClientHandlerThread implements Runnable {
 
     private final ServerController server;
@@ -37,6 +36,7 @@ public class ClientHandlerThread implements Runnable {
         this.server = server;
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     public void run() {
         while (true) {
             try {
@@ -49,7 +49,8 @@ public class ClientHandlerThread implements Runnable {
                 try {
                     // We can assume the next message is a Communication enumerated type.
                     Communication command = (Communication) take;
-                    System.out.println(String.format("Command from Client: %s", command));
+                    if (command != Communication.CLIENT_HEARTBEAT)
+                        System.out.println(String.format("> Command from Client: %s", command));
 
                     switch (command) {
                         // The client has updated an order.
@@ -153,21 +154,24 @@ public class ClientHandlerThread implements Runnable {
                             // Send a sentinel communication to mark the end of the sending.
                             client.writeToClient(Communication.SENTINEL);
                             break;
+                        case CLIENT_HEARTBEAT:
+                            // We have received a heartbeat! This will stop the connection from timing out...
+                            break;
                         default:
                             // The client has sent an invalid Communication.
-                            System.out.println(String.format("WARNING: Communication '%s' should not be sent by clients.", command));
-                            System.out.println("Stability of server is no longer guaranteed if data was also passed with the command!!!");
+                            System.out.println(String.format("!! WARNING: Communication '%s' should not be sent by clients.", command));
+                            System.out.println("!! Stability of server is no longer guaranteed if data was also passed with the command!!!");
                             break;
                     }
                 } catch (ClassCastException ex) {
                     ex.printStackTrace();
                     // The client has sent an unknown Communication.
-                    System.out.println(String.format("DANGER: '%s' could not be treated as a Communication.", take.toString()));
-                    System.out.println("Stability of server is no longer guaranteed if data was also passed with the command!!!");
-                    System.out.println(String.format("Technical details: %s: %s", ex.getClass().getTypeName(), ex.getMessage()));
+                    System.out.println(String.format("!! DANGER: '%s' could not be treated as a Communication.", take.toString()));
+                    System.out.println("!! Stability of server is no longer guaranteed if data was also passed with the command!!!");
+                    System.out.println(String.format("!! Technical details: %s: %s", ex.getClass().getTypeName(), ex.getMessage()));
                 }
             } catch (InterruptedException e) {
-                System.out.println(String.format("Unable to process input: %s: %s", e.getClass().getTypeName(), e.getMessage()));
+                System.out.println(String.format("!! Unable to process input: %s: %s", e.getClass().getTypeName(), e.getMessage()));
             }
         }
     }

@@ -13,7 +13,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 /**
- * Created by sky on 26/9/18.
+ * This view is an intermittently-displayed view, which shows
+ * all the current orders on a table that have yet to be billed.
+ *
+ * @author Keagan Foster
+ * @author Joshua Skinner
+ * @version 1
+ * @since 0.1
  */
 public class OrderedItemsView implements IView {
 

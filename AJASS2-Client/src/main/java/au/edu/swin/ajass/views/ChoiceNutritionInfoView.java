@@ -10,7 +10,13 @@ import java.awt.*;
 import java.util.Arrays;
 
 /**
- * Created by sky on 26/9/18.
+ * This view is an intermittently-displayed view, which shows the
+ * user's selected items' nutritional information.
+ *
+ * @author Keagan Foster
+ * @author Joshua Skinner
+ * @version 1.0
+ * @since 0.1
  */
 public class ChoiceNutritionInfoView implements IView {
 

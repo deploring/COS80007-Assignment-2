@@ -18,5 +18,6 @@ public enum Communication {
     CLIENT_CREATE_ORDER, // The client is sending a new order that it created.
     CLIENT_UPDATE_ORDER, // The client is sending a request to place an existing order into a new order state.
     CLIENT_WANT_ORDERS, // The client wants to retrieve all current orders.
+    CLIENT_HEARTBEAT, // The client is keeping the connection from timing out with this communication.
     SENTINEL // No further data retrieval should take place, if any has taken place.
 }

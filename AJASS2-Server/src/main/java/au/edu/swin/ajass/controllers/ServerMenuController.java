@@ -5,6 +5,7 @@ import au.edu.swin.ajass.enums.Communication;
 import au.edu.swin.ajass.enums.OrderState;
 import au.edu.swin.ajass.models.*;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 /**
@@ -34,10 +35,13 @@ public final class ServerMenuController {
     private MenuItems itemCache;
 
     ServerMenuController(ServerController server) {
+        System.out.println("> Creating table models and collections...");
         this.server = server;
         tables = new HashMap<>();
-        itemCache = new MenuItems();
         createTables();
+        System.out.println("...success!");
+
+        itemCache = new MenuItems(server);
     }
 
     /**
@@ -50,29 +54,41 @@ public final class ServerMenuController {
     }
 
     /**
-     * Creates a new order for a table. The order must be
-     * constructed specially if only one food item has been
-     * ordered and not two.
-     *
-     * @param tableNumber  The number of the table the order was placed at.
-     * @param customerName The customer's name.
-     * @param food         The customer's preference of food.
-     * @param beverage     The customer's preference of beverage.
-     * @see Order
+     * Creates a new order for a table. This is done by the user.
+     * The new order should be placed in the database, and when
+     * this is done, the order will get its own unique ID.
+     * @see #addOrder(int, int, String, OrderState, MenuItem, MenuItem, boolean)
      */
     public void createOrder(int tableNumber, String customerName, MenuItem food, MenuItem beverage) {
+        new Thread(() -> {
+            int orderID = server.getDatabase().newOrder(tableNumber, customerName, food, beverage);
+            addOrder(tableNumber, orderID, customerName, OrderState.WAITING, food, beverage, true);
+        }).start();
+    }
+
+    /**
+     * Creates an order from the required components, and then distributes it if necessary.
+     *
+     * @param tableNumber Table number the order was placed at.
+     * @param customerName The customer's name.
+     * @param state The order's state.
+     * @param food The food ordered, if any.
+     * @param beverage The beverage ordered, if any.
+     * @param distribute Should this order be distributed client-side?
+     */
+    public void addOrder(int tableNumber, int orderID, String customerName, OrderState state, MenuItem food, MenuItem beverage, boolean distribute) {
         // Get the table first.
         Table table = getTable(tableNumber);
 
         if (food != null && beverage != null)
             // Proceed as normal and create the order.
-            distributeOrder(tableNumber, table.addOrder(OrderState.WAITING, new Order(customerName, food, beverage)));
+            distributeOrder(tableNumber, table.addOrder(state, new Order(orderID, customerName, food, beverage)), distribute);
         else if (food != null)
             // The order only contains food, no beverage.
-            distributeOrder(tableNumber, table.addOrder(OrderState.WAITING, new Order(customerName, Order.FOOD_ONLY, food)));
+            distributeOrder(tableNumber, table.addOrder(state, new Order(orderID, customerName, Order.FOOD_ONLY, food)), distribute);
         else if (beverage != null)
             // The order only contains a beverage, no food.
-            distributeOrder(tableNumber, table.addOrder(OrderState.WAITING, new Order(customerName, Order.BEVERAGE_ONLY, beverage)));
+            distributeOrder(tableNumber, table.addOrder(state, new Order(orderID, customerName, Order.BEVERAGE_ONLY, beverage)), distribute);
         else
             throw new IllegalArgumentException("Food and beverage cannot be null");
     }
@@ -83,7 +99,10 @@ public final class ServerMenuController {
      * @param tableNumber The number of the table the order was placed at.
      * @param toDisribute The actual order.
      */
-    private void distributeOrder(int tableNumber, Order toDisribute) {
+    private void distributeOrder(int tableNumber, Order toDisribute, boolean distribute) {
+        // The server may be adding back pre-existing orders after a restart.
+        // Don't distribute if this is the case, as there are no clients connected yet.
+        if (!distribute) return;
         server.writeToAllClients(Communication.SERVER_ADD_ORDER);
         server.writeToAllClients(tableNumber);
         server.writeToAllClients(toDisribute);
@@ -101,15 +120,27 @@ public final class ServerMenuController {
      * @see OrderLocation
      */
     public void changeOrderState(OrderState oldState, int tableNumber, int position, OrderState newState) {
-        getTable(tableNumber).swapOrder(oldState, position, newState);
+        int ID = getTable(tableNumber).getOrder(oldState, position).getOrderID();
 
-        // Distribute the changes to all the clients afterward.
-        server.writeToAllClients(Communication.SERVER_UPDATE_ORDER);
-        server.writeToAllClients(oldState);
-        server.writeToAllClients(tableNumber);
-        server.writeToAllClients(position);
-        server.writeToAllClients(newState);
-        // No sentinel is required as we are supplying a finite amount of items!
+        new Thread(() -> {
+            try {
+                // Reflect the change in SQL first, in case there is an error..
+                server.getDatabase().updateOrder(ID, newState);
+
+                // Do the change after.
+                getTable(tableNumber).swapOrder(oldState, position, newState);
+
+                // Distribute the changes to all the clients afterward.
+                server.writeToAllClients(Communication.SERVER_UPDATE_ORDER);
+                server.writeToAllClients(oldState);
+                server.writeToAllClients(tableNumber);
+                server.writeToAllClients(position);
+                server.writeToAllClients(newState);
+                // No sentinel is required as we are supplying a finite amount of items!
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     /**

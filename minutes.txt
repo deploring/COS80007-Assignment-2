@@ -4,13 +4,33 @@
 (D1) Convert Maven project into modules (standalone, client, server)
 > D1 Complete
 (D2) Decide features for extension
+> Group Orders
+> Fault Tolerance (automatic re-opening of connection)
+> D2 Complete
 (D3) Implement RMI Interface?
 > A TCP Client/Server interface was chosen over RMI.
 > D3 Complete
 (D4.1) Implement basic Client/Server interface
 > D4.1 Complete
 (D4.2) Implement Communications between Client/Server
+> D4.2 Complete
 (D5) Lambdas for validation
+> D5 Ignored
 (D6) Database structure
+> D6 Complete
 (D7) Configuration file/system (to show specific panels, server IP, port, etc.)
-> D7 Partially Complete (no system for showing specific panels yet)
+> D7 Complete (system for showing specific panels irrelevant)
+
+> Week 10
+
+(D1) Explain VPS usage in report
+(D2) Picture of multiple clients, acting as different roles.
+(D3) Create table creation statements.
+> D3 Complete
+(D4) Implement Database saving
+> D4 Complete
+(D5) Implement Database loading
+> D5 Complete
+(D6) Implement custom features
+> Group Orders
+> Fault Tolerance (automatic re-opening of connection) (added)

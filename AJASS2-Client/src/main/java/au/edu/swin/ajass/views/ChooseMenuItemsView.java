@@ -9,7 +9,13 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 /**
- * Created by sky on 26/9/18.
+ * This view contains two separate combo boxes that allows
+ * the user to select one food item and one beverage item.
+ *
+ * @author Keagan Foster
+ * @author Joshua Skinner
+ * @version 1.0
+ * @since 0.1
  */
 public class ChooseMenuItemsView implements IView {
 
@@ -24,7 +30,7 @@ public class ChooseMenuItemsView implements IView {
     // Logic variables
     private MealType currentMealType;
 
-    public ChooseMenuItemsView(MainView main) {
+    ChooseMenuItemsView(MainView main) {
         this.main = main;
 
         // Generate border
@@ -43,7 +49,7 @@ public class ChooseMenuItemsView implements IView {
      *
      * @param type Meal type to populate comboBox with.
      */
-    public void populateLists(MealType type) {
+    void populateLists(MealType type) {
         // Clear comboBoxes before filling.
         foodList.removeAllItems();
         beverageList.removeAllItems();
