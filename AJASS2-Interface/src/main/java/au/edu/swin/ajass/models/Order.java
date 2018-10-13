@@ -4,7 +4,14 @@ import java.io.Serializable;
 
 /**
  * Order is a model that represents a person's order.
- * Orders are contained within Tables.
+ * Orders are contained within Tables, and are ordered
+ * by a customer (name), and contain a food menu item
+ * as well as a beverage menu item.
+ *
+ * @author Joshua Skinner
+ * @author Bradley Chick
+ * @version 1.1
+ * @since 0.1
  */
 public final class Order implements Serializable {
 
@@ -12,20 +19,20 @@ public final class Order implements Serializable {
     public static int FOOD_ONLY = 0;
     public static int BEVERAGE_ONLY = 1;
 
+    private int orderID;
     private String customerName;
     private MenuItem food, beverage;
-    private boolean billed;
 
     /**
      * @param customerName Name of the customer who made the order.
      * @param food         The food that was ordered.
      * @param beverage     The beverage that was ordered.
      */
-    public Order(String customerName, MenuItem food, MenuItem beverage) {
+    public Order(int orderID, String customerName, MenuItem food, MenuItem beverage) {
+        this.orderID = orderID;
         this.customerName = customerName;
         this.food = food;
         this.beverage = beverage;
-        this.billed = false;
     }
 
     /**
@@ -41,21 +48,14 @@ public final class Order implements Serializable {
      * @param state        Did they only order food or only order a beverage?
      * @param item         The item ordered.
      */
-    public Order(String customerName, int state, MenuItem item) {
+    public Order(int orderID, String customerName, int state, MenuItem item) {
+        this.orderID = orderID;
         this.customerName = customerName;
-        this.billed = false;
 
         if (state == FOOD_ONLY)
             this.food = item;
         else if (state == BEVERAGE_ONLY)
             this.beverage = item;
-    }
-
-    /**
-     * Marks the Order as billed.
-     */
-    public void bill() {
-        billed = true;
     }
 
     /* Getters */
@@ -72,7 +72,7 @@ public final class Order implements Serializable {
         return beverage;
     }
 
-    public boolean isBilled() {
-        return billed;
+    public int getOrderID() {
+        return orderID;
     }
 }

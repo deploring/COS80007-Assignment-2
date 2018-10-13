@@ -29,6 +29,14 @@ public final class Table {
     }
 
     /**
+     * Clears orders from the table.
+     */
+    public void clear() {
+        for (LinkedList<Order> orders : this.orders.values())
+            orders.clear();
+    }
+
+    /**
      * @return Total amount of orders for this table.
      */
     public int getTotalNumberOfOrders() {

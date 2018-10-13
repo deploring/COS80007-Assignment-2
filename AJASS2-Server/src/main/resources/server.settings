@@ -8,5 +8,5 @@ mysql_user=root
 mysql_pass=swinburne
 mysql_host=localhost
 mysql_port=3306
-mysql_database=database
+mysql_database=AJASS2
 server_port=6969

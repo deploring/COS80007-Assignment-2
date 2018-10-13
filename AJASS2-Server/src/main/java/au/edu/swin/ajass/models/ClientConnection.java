@@ -8,8 +8,13 @@ import java.net.Socket;
 import java.net.SocketException;
 
 /**
- * This model represents a Client's connection to
- * the server. It can
+ * This model represents a Server's connection to the client.
+ * It listens for incoming messages, as well as writing messages
+ * to the client when needed.
+ *
+ * @author Joshua Skinner
+ * @version 1.0
+ * @since 0.1
  */
 public class ClientConnection {
 

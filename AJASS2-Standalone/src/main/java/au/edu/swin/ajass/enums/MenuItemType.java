@@ -1,7 +1,7 @@
 package au.edu.swin.ajass.enums;
 
 /**
- * Created by sky on 26/9/18.
+ * Represents all the different food types a menu item can have.
  */
 public enum MenuItemType {
     FOOD,

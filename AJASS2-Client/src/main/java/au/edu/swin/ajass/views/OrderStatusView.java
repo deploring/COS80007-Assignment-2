@@ -13,7 +13,16 @@ import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by sky on 26/9/18.
+ * This view is responsible for displaying orders of specific
+ * states in separate tables. In the context of the requirements,
+ * the only orders that need to be displayed are the ones marked
+ * as WAITING or SERVED. BILLED orders do not need to be displayed.
+ *
+ * @author Keagan Foster
+ * @author Joshua Skinner
+ * @version 1
+ * @since 0.1
+ * @see OrderState
  */
 public class OrderStatusView implements IView {
 
@@ -26,7 +35,7 @@ public class OrderStatusView implements IView {
     private JLabel waitingLabel, servedLabel;
     private JTable waitingTable, servedTable;
 
-    public OrderStatusView(MainView main) {
+    OrderStatusView(MainView main) {
         this.main = main;
 
         // Generate border

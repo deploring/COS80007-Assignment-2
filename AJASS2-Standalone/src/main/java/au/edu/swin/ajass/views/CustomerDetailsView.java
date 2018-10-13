@@ -14,6 +14,11 @@ import java.awt.*;
  * <li>Customer's Details</li>
  * <li>Meal Type</li>
  * </ul>
+ *
+ * @author Keagan Foster
+ * @author Joshua Skinner
+ * @version 1.0
+ * @since 0.1
  */
 public class CustomerDetailsView implements IView {
 

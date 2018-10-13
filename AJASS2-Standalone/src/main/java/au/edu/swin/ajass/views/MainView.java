@@ -8,6 +8,13 @@ import java.awt.*;
 
 /**
  * This View displays each individual sub-section on the screen.
+ * It also acts as the central class where models, views, and
+ * controllers can all communicate with one another.
+ *
+ * @author Joshua Skinner
+ * @author Keagan Foster
+ * @version 1.0
+ * @since 0.1
  */
 public final class MainView extends JFrame {
 

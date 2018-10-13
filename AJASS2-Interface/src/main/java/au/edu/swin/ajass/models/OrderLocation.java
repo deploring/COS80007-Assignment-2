@@ -9,6 +9,10 @@ package au.edu.swin.ajass.models;
  *
  * Useful for when you want to locate or move around an
  * Order. Specifically when preparing and billing one.
+ *
+ * @author Joshua Skinner
+ * @version 1.0
+ * @since 0.1
  */
 public final class OrderLocation {
 

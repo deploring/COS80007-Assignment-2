@@ -12,7 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by sky on 26/9/18.
+ * This view contains two separate combo boxes that allows
+ * the user to select one food item and one beverage item.
+ *
+ * @author Keagan Foster
+ * @author Joshua Skinner
+ * @version 1.0
+ * @since 0.1
  */
 public class ChooseMenuItemsView implements IView {
 

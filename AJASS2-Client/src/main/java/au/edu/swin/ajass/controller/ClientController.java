@@ -7,11 +7,20 @@ import au.edu.swin.ajass.models.ServerConnection;
 import au.edu.swin.ajass.thread.ServerHandlerThread;
 import au.edu.swin.ajass.views.MainView;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Created by Heartist on 3/10/2018.
+ * The Client Controller handles connection to the server,
+ * as well as configuration settings, and of course, the
+ * menu controller.
+ *
+ * @author Joshua Skinner
+ * @author Bradley Chick
+ * @version 1.0
+ * @since 0.1
+ * @see ServerHandlerThread
  */
 public class ClientController implements ISocketController {
 
@@ -27,7 +36,7 @@ public class ClientController implements ISocketController {
     // Access to table/order models.
     private ClientMenuController menu;
 
-    public ClientController(MainView main) {
+    public ClientController(MainView main) throws IllegalStateException {
         this.main = main;
 
         // Load in settings.
@@ -35,9 +44,17 @@ public class ClientController implements ISocketController {
 
         try {
             server = new ServerConnection(this, new Socket(config.getString("server_hostname"), config.getInteger("server_port")));
+            server.postStartReaderThread();
         } catch (IOException e) {
             e.printStackTrace();
-            // This shouldn't happen, so just print stack trace.
+            // They couldn't connect. Throw an illegal state so the program does not continue loading up.
+
+            JOptionPane.showMessageDialog(null, String.format("Unable to connect to '%s:%s'.\n" +
+                            "Please double-check server settings in 'client.settings' file.\n" +
+                            "This file is created in the same directory as your JAR file.",
+                    config.getString("server_hostname"), config.getString("server_port")),
+                    "Unable to Connect", JOptionPane.ERROR_MESSAGE);
+            throw new IllegalStateException();
         }
 
         // Create menu controller after we connect to the server.
@@ -56,12 +73,68 @@ public class ClientController implements ISocketController {
     }
 
     /**
+     * @return True if this ServerConnection is the currently monitored one.
+     */
+    public boolean isValidConnection(ServerConnection toCheck) {
+        return server == toCheck;
+    }
+
+    /**
      * Sends a message back to the server.
      *
      * @param message The message to send to the server.
      */
     public void writeToServer(Object message) {
-        server.writeToServer(message);
+        if (!server.writeToServer(message))
+            lostConnection();
+    }
+
+    /**
+     * This should be called when the connection to the
+     * server is, or is suspected to be invalid or dead.
+     */
+    public void lostConnection() {
+        // Nothing will happen unless the connection still exists.
+        if (server != null) {
+            server = null;
+
+            // Disable the UI and reconnect as quickly as possible.
+            main.connectionLost();
+            System.out.println("Now attempting to re-connect to server...");
+            reconnect();
+        }
+    }
+
+    /**
+     * Attempts to re-establish a connection with the server.
+     * If a connection cannot be established, it is re-attempted
+     * until a connection is established.
+     */
+    private void reconnect() {
+        // Set the connection as invalid so reconnections cannot be attempted multiple times.
+        try {
+            // Re-create a new ServerConnection. This will automatically set CONNECTION_STATE back to VALID if successful.
+            server = new ServerConnection(this, new Socket(config.getString("server_hostname"), config.getInteger("server_port")));
+            server.postStartReaderThread();
+
+            // Since we have re-connected, get the server to send through the current orders again.
+            writeToServer(Communication.CLIENT_WANT_ORDERS);
+
+            // Allow the UI to be used again.
+            main.connectionReEstablished();
+        } catch (IOException e) {
+            // Continually attempt to re-connect in the background.
+            Thread reconnectThread = new Thread(() -> {
+                try {
+                    // Do it every half a second. It's not important.
+                    Thread.sleep(500);
+                } catch (InterruptedException ignored) {
+                }
+                reconnect();
+            });
+            reconnectThread.setDaemon(true);
+            reconnectThread.start();
+        }
     }
 
     /**

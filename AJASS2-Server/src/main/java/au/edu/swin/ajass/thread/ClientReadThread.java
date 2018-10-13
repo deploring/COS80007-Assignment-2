@@ -10,6 +10,11 @@ import java.io.ObjectInputStream;
 /**
  * This Thread listens for incoming messages from
  * clients and stores them in the queue for processing.
+ *
+ * @author Joshua Skinner
+ * @version 1.0
+ * @since 0.1
+ * @see ClientConnection
  */
 public class ClientReadThread implements Runnable {
 
@@ -35,10 +40,10 @@ public class ClientReadThread implements Runnable {
                 if (in instanceof Communication && in != Communication.SENTINEL)
                     server.newMessage(client);
             } catch (IOException | InterruptedException e) {
-                System.out.println(String.format("Unable to read input: %s: %s", e.getClass().getTypeName(), e.getMessage()));
+                System.out.println(String.format("!! Unable to read input: %s: %s", e.getClass().getTypeName(), e.getMessage()));
                 return;
             } catch (ClassNotFoundException e) {
-                System.out.println("Unsupported or unknown class passed through as input?");
+                System.out.println("!! Unsupported or unknown class passed through as input?");
                 return;
             }
         }
