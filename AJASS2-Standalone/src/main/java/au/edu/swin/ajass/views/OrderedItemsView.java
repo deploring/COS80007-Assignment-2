@@ -55,17 +55,35 @@ public class OrderedItemsView implements IView {
 
         String[][] orderData = new String[table.getTotalNumberOfOrders()][2];
 
-        // Populate orderData with waiting orders, and then served orders.
+        // Populate orderData with waiting orders, and then served orders with formatted content
         int i = -1;
-        for (Iterator<Order> iter = table.getOrders(OrderState.WAITING); iter.hasNext(); )
-            orderData[++i] = Utilities.generateOrderRowData(iter.next());
-        for (Iterator<Order> iter = table.getOrders(OrderState.SERVED); iter.hasNext(); )
-            orderData[++i] = Utilities.generateOrderRowData(iter.next());
-
+        for (Iterator<Order> iter = table.getOrders(OrderState.WAITING); iter.hasNext(); ){
+            String[] rowData = Utilities.generateOrderRowData(iter.next());
+            String reformatRow = "<html>" + rowData[1] + "</html>";
+            rowData[1] = reformatRow;
+            orderData[++i] = rowData;
+        }
+        for (Iterator<Order> iter = table.getOrders(OrderState.SERVED); iter.hasNext(); ){
+            String[] rowData = Utilities.generateOrderRowData(iter.next());
+            String reformatRow = "<html>" + rowData[1] + "</html>";
+            rowData[1] = reformatRow;
+            orderData[++i] = rowData;
+        }
 
         // Add rows to the table model.
         /* STREAM */
         Arrays.stream(orderData).forEach(model::addRow);
+
+        // Resize the table rows to fit all content
+        int y;
+        for (y = 0; y < table.getNumberOfOrders(OrderState.WAITING); y++){
+            int orderSize = table.getOrder(OrderState.WAITING, y).getOrderSize();
+            itemsTable.setRowHeight(y, itemsTable.getRowHeight() * orderSize);
+        }
+        for (int x = 0; x < table.getNumberOfOrders(OrderState.SERVED); x++){
+            int orderSize = table.getOrder(OrderState.SERVED, x).getOrderSize();
+            itemsTable.setRowHeight(y + x, itemsTable.getRowHeight() * orderSize);
+        }
     }
 
     @SuppressWarnings("Duplicates")

@@ -4,7 +4,9 @@ import au.edu.swin.ajass.enums.OrderState;
 import au.edu.swin.ajass.models.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Stream;
+
 
 /**
  * This controller handles all data manipulation handed
@@ -39,7 +41,7 @@ public final class MenuController {
     }
 
     /**
-     * Creates a new order for a table. The order must be
+     * Creates a new individual order for a table. The order must be
      * constructed specially if only one food item has been
      * ordered and not two.
      *
@@ -47,20 +49,32 @@ public final class MenuController {
      * @param customerName The customer's name.
      * @param food         The customer's preference of food.
      * @param beverage     The customer's preference of beverage.
-     * @see Order
+     * @see IndividualOrder
      */
-    public void createOrder(Table table, String customerName, MenuItem food, MenuItem beverage) {
+    public void createIndividualOrder(Table table, String customerName, MenuItem food, MenuItem beverage) {
         if (food != null && beverage != null)
             // Proceed as normal and create the order.
-            table.addOrder(OrderState.WAITING, new Order(customerName, food, beverage));
+            table.addOrder(OrderState.WAITING, new IndividualOrder(customerName, food, beverage));
         else if (food != null)
             // The order only contains food, no beverage.
-            table.addOrder(OrderState.WAITING, new Order(customerName, Order.FOOD_ONLY, food));
+            table.addOrder(OrderState.WAITING, new IndividualOrder(customerName, Order.FOOD_ONLY, food));
         else if (beverage != null)
             // The order only contains a beverage, no food.
-            table.addOrder(OrderState.WAITING, new Order(customerName, Order.BEVERAGE_ONLY, beverage));
+            table.addOrder(OrderState.WAITING, new IndividualOrder(customerName, Order.BEVERAGE_ONLY, beverage));
         else
             throw new IllegalArgumentException("Food and beverage cannot be null");
+    }
+    /**
+     * Creates a new group order for a table.
+     *
+     * @param table        The table the customer ordered from.
+     * @param groupName    The group's name.
+     * @param groupSize    The number of people in the group.
+     * @param items        The group's order items.
+     * @see GroupOrder
+     */
+    public void createGroupOrder(Table table, String groupName, int groupSize , List<MenuItem[]> items){
+        table.addOrder(OrderState.WAITING, new GroupOrder(groupSize, groupName, items));
     }
 
     /**

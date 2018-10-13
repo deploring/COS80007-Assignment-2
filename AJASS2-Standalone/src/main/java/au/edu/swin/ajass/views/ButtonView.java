@@ -5,6 +5,7 @@ import au.edu.swin.ajass.enums.OrderState;
 import au.edu.swin.ajass.models.MenuItem;
 import au.edu.swin.ajass.models.OrderLocation;
 import au.edu.swin.ajass.models.Table;
+import au.edu.swin.ajass.enums.CustomerType;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -65,22 +66,25 @@ public class ButtonView implements IView {
 
         // Enter data and confirm order
         enterButton.addActionListener(e -> {
-            // Validate customer name first and foremost
-            String custName = main.getCustomerDetailsView().getCustomerName();
-            if (custName.length() == 0) {
-                JOptionPane.showConfirmDialog(null, "Please enter the customer's name", "Validation Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+            // Validate orders name first and foremost
+            String name = main.getCustomerDetailsView().getOrderName();
+            if (name.length() == 0) {
+                JOptionPane.showConfirmDialog(null, "Please enter the order's name", "Validation Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            try {
-                // Check if table number is valid and is in range.
-                int tableNumber = main.getCustomerDetailsView().getTableNumber();
-                if (tableNumber <= 0 || tableNumber > MenuController.NUMBER_OF_TABLES)
-                    throw new IllegalArgumentException();
+            // Check if table number is valid and is in range.
+            int tableNumber = main.getCustomerDetailsView().getTableNumber();
+            if (tableNumber <= 0 || tableNumber > MenuController.NUMBER_OF_TABLES) {
+                JOptionPane.showConfirmDialog(null, "Please enter a valid table number (1-8)", "Validation Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-                // We can assume table is valid if it is in range.
-                Table table = main.getController().getTable(tableNumber);
+            // We can assume table is valid if it is in range.
+            Table table = main.getController().getTable(tableNumber);
 
+            // Checks order type to create corresponding order
+            if(main.getCustomerDetailsView().getCustType() == CustomerType.Single){
                 try {
                     // Validate their choices.
                     MenuItem[] choices = main.getChooseMenuItemsView().getSelectedItems();
@@ -90,7 +94,7 @@ public class ButtonView implements IView {
                     }
 
                     // Create order.
-                    main.getController().createOrder(table, custName, choices[0], choices[1]);
+                    main.getController().createIndividualOrder(table, name, choices[0], choices[1]);
                     JOptionPane.showConfirmDialog(null, "Order placed successfully.", "Information", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
 
                     // Reset!
@@ -103,8 +107,25 @@ public class ButtonView implements IView {
                 } catch (IllegalStateException ex) {
                     JOptionPane.showConfirmDialog(null, "Please select a meal type to place order", "Validation Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (IllegalArgumentException | IllegalStateException ex) {
-                JOptionPane.showConfirmDialog(null, "Please enter a valid table number (1-8)", "Validation Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+            }
+            // Checks order type to create corresponding order
+            else if(main.getCustomerDetailsView().getCustType() == CustomerType.Group){
+                // Check if the group number is valid and is in range
+                int groupNumber = main.getCustomerDetailsView().getGroupSize();
+                if(groupNumber <= 1 || groupNumber > 8){
+                    JOptionPane.showConfirmDialog(null, "Please enter a group size between 2-8", "Validation Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                // Create group order
+                main.getController().createGroupOrder(table, name, groupNumber, main.getChooseMenuItemsView().getGroupOrder());
+                JOptionPane.showConfirmDialog(null, "Order placed successfully.", "Information", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                // Reset!
+                main.getCustomerDetailsView().softReset();
+                main.getChooseMenuItemsView().reset();
+
+                // Update state!
+                main.updateState(MainView.UIState.UPDATE_ORDERS);
+                main.updateState(MainView.UIState.NOTHING);
             }
         });
 

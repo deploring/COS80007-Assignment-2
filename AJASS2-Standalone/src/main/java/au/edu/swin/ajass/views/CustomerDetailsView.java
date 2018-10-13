@@ -1,5 +1,6 @@
 package au.edu.swin.ajass.views;
 
+import au.edu.swin.ajass.enums.CustomerType;
 import au.edu.swin.ajass.enums.MealType;
 
 import javax.swing.*;
@@ -21,9 +22,14 @@ public class CustomerDetailsView implements IView {
 
     // View Elements
     private JPanel detailsPanel;
-    private JTextField custName, tableNum;
+    private JTextField orderName, tableNum, groupSize;
     private JRadioButton[] buttons;
     private ButtonGroup mealButtons;
+    private JButton singleButton, groupButton;
+
+    // Checks for View Elements
+    private boolean typeChoosen = false;
+    private CustomerType type;
 
     CustomerDetailsView(MainView main) {
         this.main = main;
@@ -41,18 +47,81 @@ public class CustomerDetailsView implements IView {
 
     @Override
     public void generate() {
-        JLabel custLabel, tableLabel, mealType;
+        detailsPanel.removeAll();
+        if(typeChoosen == false){
+            singleButton = new JButton("Single");
+            singleButton.setPreferredSize(new Dimension(125, 30));
+            singleButton.setFont(new Font("Serif", Font.BOLD, 13));
+
+            groupButton = new JButton("Group");
+            groupButton.setPreferredSize(new Dimension(125, 30));
+            groupButton.setFont(new Font("Serif", Font.BOLD, 13));
+
+            detailsPanel.add(singleButton);
+            detailsPanel.add(groupButton);
+
+            singleButton.addActionListener(e -> {
+                typeChoosen=true;
+                type = CustomerType.Single;
+                displayContent();
+            });
+
+            groupButton.addActionListener(e -> {
+                typeChoosen=true;
+                type = CustomerType.Group;
+                main.getChooseMenuItemsView().addGroupButtons();
+                displayContent();
+            });
+
+            main.revalidate();
+            main.repaint();
+        }
+    }
+
+    /**
+     * Called upon when user choices order type. Displays
+     * options to fill out to complete order.
+     */
+    private void displayContent(){
+        detailsPanel.remove(singleButton);
+        detailsPanel.remove(groupButton);
+
+        JLabel tableLabel, mealType;
         Font panelFont = new Font("Serif", Font.PLAIN, 15);
 
-        custLabel = new JLabel("Customer Name:");
-        custLabel.setFont(panelFont);
+        orderName = new JTextField(15);
+        groupSize = new JTextField(5);
+
+        // Checks order type to display view elements accordingly
+        if(type == CustomerType.Single){
+            JLabel custLabel = new JLabel("Customer Name:");
+            custLabel.setFont(panelFont);
+            orderName.setFont(panelFont);
+
+            detailsPanel.add(custLabel);
+            detailsPanel.add(orderName);
+        }
+        else {
+            JLabel groupLabel = new JLabel("Group Name:");
+            groupLabel.setFont(panelFont);
+            JLabel groupSizeLabel = new JLabel("Group Size:");
+            groupSizeLabel.setFont(panelFont);
+
+            orderName.setFont(panelFont);
+            groupSize.setFont(panelFont);
+
+            detailsPanel.add(groupLabel);
+            detailsPanel.add(orderName);
+            detailsPanel.add(groupSizeLabel);
+            detailsPanel.add(groupSize);
+        }
+
         tableLabel = new JLabel("Table Number:");
         tableLabel.setFont(panelFont);
         mealType = new JLabel("Meal Type: ");
         mealType.setFont(panelFont);
 
-        custName = new JTextField(20);
-        custName.setFont(panelFont);
+
         tableNum = new JTextField(5);
         tableNum.setFont(panelFont);
 
@@ -70,8 +139,6 @@ public class CustomerDetailsView implements IView {
 
         buttons = new JRadioButton[]{breakfastButton, lunchButton, dinnerButton};
 
-        detailsPanel.add(custLabel);
-        detailsPanel.add(custName);
         detailsPanel.add(tableLabel);
         detailsPanel.add(tableNum);
         detailsPanel.add(mealType);
@@ -79,11 +146,13 @@ public class CustomerDetailsView implements IView {
         detailsPanel.add(lunchButton);
         detailsPanel.add(dinnerButton);
 
+        main.revalidate();
+        main.repaint();
+
         // Event handlers.
         for (JRadioButton button : buttons)
             button.addActionListener(e -> main.getChooseMenuItemsView().populateLists(getMealType()));
     }
-
     /**
      * Used by ButtonView to "soft reset", which resets everything
      * except for the table number text, as per specifications.
@@ -91,15 +160,23 @@ public class CustomerDetailsView implements IView {
      * @see ButtonView#generate()
      */
     public void softReset() {
-        custName.setText("");
+        typeChoosen = false;
+        type = null;
+        orderName.setText("");
+        groupSize.setText("");
         mealButtons.clearSelection();
+        generate();
     }
 
     @Override
     public void reset() {
-        custName.setText("");
+        typeChoosen = false;
+        type = null;
+        orderName.setText("");
+        groupSize.setText("");
         tableNum.setText("");
         mealButtons.clearSelection();
+        generate();
     }
 
     @Override
@@ -109,8 +186,19 @@ public class CustomerDetailsView implements IView {
 
     /* Getters */
 
-    public String getCustomerName() {
-        return custName.getText();
+    public String getOrderName() {
+        return orderName.getText();
+    }
+
+    public CustomerType getCustType(){
+        return type;
+    }
+
+    public int getGroupSize(){
+        if(groupSize.getText().equals("")){
+            return 0;
+        }
+        return Integer.parseInt(groupSize.getText());
     }
 
     /**

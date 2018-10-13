@@ -25,6 +25,7 @@ public class OrderStatusView implements IView {
     private DefaultTableModel waitingModel, servedModel;
     private JLabel waitingLabel, servedLabel;
     private JTable waitingTable, servedTable;
+    private Object[][] waitingData, servedData;
 
     public OrderStatusView(MainView main) {
         this.main = main;
@@ -50,8 +51,8 @@ public class OrderStatusView implements IView {
         AtomicInteger tableNo = new AtomicInteger(0);
         main.getController().getTables().forEach(table -> {
             tableNo.addAndGet(1);
-            Object[][] waitingData = new Object[table.getNumberOfOrders(OrderState.WAITING)][];
-            Object[][] servedData = new Object[table.getNumberOfOrders(OrderState.SERVED)][];
+            waitingData = new Object[table.getNumberOfOrders(OrderState.WAITING)][];
+            servedData = new Object[table.getNumberOfOrders(OrderState.SERVED)][];
 
             // IMPORTANT: For each order, also invisibly store the table number and the order's position in its linked list.
             // Every time the linked lists change, this updates, so it is irrelevant if values become outdated.
@@ -59,7 +60,8 @@ public class OrderStatusView implements IView {
             int i = 0;
             for (Iterator<Order> iter = table.getOrders(OrderState.WAITING); iter.hasNext(); ) {
                 Order order = iter.next();
-                waitingData[i] = new String[]{String.format("%s | Table %d | %s", order.getCustomerName(), tableNo.get(), Utilities.generateOrderRowData(order)[1]), String.valueOf(i), String.valueOf(tableNo.get())};
+                String orderInfo = resizeOrderData(order, tableNo.get());
+                waitingData[i] = new String[]{orderInfo, String.valueOf(i), String.valueOf(tableNo.get())};
                 i++;
             }
 
@@ -67,16 +69,29 @@ public class OrderStatusView implements IView {
             i = 0;
             for (Iterator<Order> iter = table.getOrders(OrderState.SERVED); iter.hasNext(); ) {
                 Order order = iter.next();
-                servedData[i] = new String[]{String.format("%s | Table %d | %s", order.getCustomerName(), tableNo.get(), Utilities.generateOrderRowData(order)[1]), String.valueOf(i), String.valueOf(tableNo.get())};
+                String orderInfo = resizeOrderData(order, tableNo.get());
+                servedData[i] = new String[]{orderInfo,  String.valueOf(i), String.valueOf(tableNo.get())};
                 i++;
             }
 
             // Populate table models.
-            for (Object[] waitingDatum : waitingData)
+            i = 0;
+            for (Object[] waitingDatum : waitingData){
                 waitingModel.addRow(waitingDatum);
+                String rowData = (String)waitingDatum[0];
+                int rowSize = resizeRow(rowData);
+                waitingTable.setRowHeight(i, waitingTable.getRowHeight() * rowSize);
+                i++;
+            }
 
-            for (Object[] servedDatum : servedData)
+            i=0;
+            for (Object[] servedDatum : servedData){
                 servedModel.addRow(servedDatum);
+                String rowData = (String)servedDatum[0];
+                int rowSize = resizeRow(rowData);
+                servedTable.setRowHeight(i, servedTable.getRowHeight() * rowSize);
+                i++;
+            }
         });
 
         // Update relevant labels.
@@ -92,14 +107,14 @@ public class OrderStatusView implements IView {
     @Override
     public void generate() {
         // Generate with models that cannot be edited.
-        waitingModel = new DefaultTableModel() {
+        waitingModel = new DefaultTableModel(0, 1) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
-        servedModel = new DefaultTableModel() {
+        servedModel = new DefaultTableModel(0, 1) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -107,6 +122,7 @@ public class OrderStatusView implements IView {
         };
 
         waitingTable = new JTable(waitingModel);
+
         servedTable = new JTable(servedModel);
 
         //FIXME: JTable cells do not overflow horizontally.
@@ -212,5 +228,36 @@ public class OrderStatusView implements IView {
     @Override
     public JPanel getPanel() {
         return statusPanel;
+    }
+
+    /**
+     * @param order     Content to be reformatted
+     * @param tableNo   Information attached to the row
+     * @return  Reformatted string
+     */
+    private String resizeOrderData(Order order, int tableNo){
+        String orderInfo = String.format("<html>%s | Table %d | %s</html>", order.getOrderName(), tableNo, Utilities.generateOrderRowData(order)[1]);
+
+        if(orderInfo.length() > 95){
+            StringBuilder str =  new StringBuilder(orderInfo);
+            str.insert(95, "<br>");
+        }
+
+        return orderInfo;
+    }
+
+    /**
+     *
+     * @param rowData   Information used to resize row to fit all content
+     * @return  Multiplier needed to fit all content
+     */
+    private int resizeRow(String rowData ){
+        int extraRowCount = 0;
+        String orders[] = rowData.split("<br>");
+        for(int y = 0; y < orders.length; y ++){
+            if(orders[y].length() > 95)
+                extraRowCount++;
+        }
+        return  extraRowCount + orders.length;
     }
 }

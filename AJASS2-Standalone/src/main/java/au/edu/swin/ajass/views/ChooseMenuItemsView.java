@@ -3,10 +3,13 @@ package au.edu.swin.ajass.views;
 import au.edu.swin.ajass.enums.MealType;
 import au.edu.swin.ajass.enums.MenuItemType;
 import au.edu.swin.ajass.models.MenuItem;
+import au.edu.swin.ajass.enums.CustomerType;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sky on 26/9/18.
@@ -20,9 +23,13 @@ public class ChooseMenuItemsView implements IView {
     private JPanel menuPanel;
     private JComboBox<String> foodList;
     private JComboBox<String> beverageList;
+    private JButton groupAddButton, groupViewButton, groupResetButton;
 
     // Logic variables
     private MealType currentMealType;
+
+    //Group Order container
+    private java.util.List<MenuItem[]> orders;
 
     public ChooseMenuItemsView(MainView main) {
         this.main = main;
@@ -104,6 +111,68 @@ public class ChooseMenuItemsView implements IView {
         reset();
     }
 
+    /**
+     *  Called if the order type is a group order.
+     *  Creates and display buttons along with their
+     *  event handlers.
+     */
+    public void addGroupButtons(){
+        //JButtons to display
+        groupAddButton = new JButton("Add");
+        groupViewButton = new JButton("View");
+        groupResetButton = new JButton("Reset");
+
+        // Container for temporary orders to be held
+        orders = new ArrayList<>();
+
+        // Event handler for when the 'Add' button is clicked
+        groupAddButton.addActionListener(e -> {
+            // If items are not empty, add the order
+            MenuItem[] items = getSelectedItems();
+            if(orders.size() < main.getCustomerDetailsView().getGroupSize()){
+                if(items[0] == null && items[1] == null ){
+                    JOptionPane.showConfirmDialog(null, "Please select a food or beverage item to place order", "Validation Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+                }
+                else{
+                    orders.add(getSelectedItems());
+                }
+            }
+            else {
+                JOptionPane.showConfirmDialog(null, "Maximum number of orders reached", "Validation Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        // Event handler for when the 'View' button is clicked
+        groupViewButton.addActionListener(e -> {
+            // Format and display orders in a JOptionPane
+            String viewOrder = "";
+            for(int i = 0; i < orders.size(); i++){
+                if(orders.get(i)[0] != null && orders.get(i)[1] != null)
+                    viewOrder += orders.get(i)[0].getItemName() + " | " + orders.get(i)[1].getItemName() + "\n";
+                else if (orders.get(i)[0] != null)
+                    viewOrder += orders.get(i)[0].getItemName() + "\n";
+                else if (orders.get(i)[1] != null)
+                    viewOrder += orders.get(i)[1].getItemName() + "\n";
+                else
+                    throw new IllegalArgumentException("Food and beverage cannot be null");
+            }
+            if(orders.size() == 0){
+                viewOrder = "No orders placed";
+            }
+            JOptionPane.showMessageDialog(null, viewOrder);
+        });
+        // Event handler for when the 'Remove' button is clicked
+        groupResetButton.addActionListener(e -> {
+            // Removes all orders
+            orders.removeAll(orders);
+        });
+
+        if(main.getCustomerDetailsView().getCustType() == CustomerType.Group){
+            menuPanel.add(groupAddButton);
+            menuPanel.add(groupViewButton);
+            menuPanel.add(groupResetButton);
+        }
+    }
+
     @Override
     public void reset() {
         // Disable and re-set stuff.
@@ -115,6 +184,13 @@ public class ChooseMenuItemsView implements IView {
         foodList.removeAllItems();
         beverageList.removeAllItems();
 
+        //Clear group buttons
+        if(menuPanel.getComponentCount() > 4){
+            menuPanel.remove(groupAddButton);
+            menuPanel.remove(groupViewButton);
+            menuPanel.remove(groupResetButton);
+        }
+
         // Default items.
         foodList.addItem("---------------- Select Food ----------------");
         beverageList.addItem("---------------- Select Beverage ----------------");
@@ -124,4 +200,8 @@ public class ChooseMenuItemsView implements IView {
     public JPanel getPanel() {
         return menuPanel;
     }
+
+    // Getter
+
+    public List<MenuItem[]> getGroupOrder(){return orders;}
 }
