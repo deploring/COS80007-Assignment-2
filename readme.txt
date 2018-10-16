@@ -3,10 +3,11 @@
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 This file contains:
+    - Instructions to run the assignment
 	- Team Member's Information
 	- Features Completed
 	- Expected Marks
-	- Helped recieved from outside sources
+	- Helped received from outside sources
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		Team Member's Information
@@ -15,7 +16,7 @@ This file contains:
 Name:		Bradley Chick
 Student ID:	101 626 151 
 Subject ID:	COS80007
-		Undergradute
+		Undergraduate
 
 Name:		Joshua Skinner
 Student ID:	101 601 828
@@ -26,6 +27,33 @@ Name:		Keagan Foster
 Student ID:	101 609 822
 Subject ID:	COS80007
 		Undergraduate
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		Instructions to run the assignment
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+1. Download and Install "Maven". Follow their instructions for installation.
+    - http://maven.apache.org/install.html
+2. Navigate to the project's root directory in a command prompt/terminal.
+3. Type "mvn clean install".
+4. Wait a while, especially if it is your first time compiling something with Maven.
+5. You should receive a "reactor summary" showing the four different modules successfully compiling.
+
+* TO RUN SERVER PROGRAM*
+6.1. To run the server program, navigate to the AJASS2-Server folder in a command prompt/terminal.
+7.1. Run the server using 'java -jar AJASS2-Server.jar'. It will terminate itself.
+8.1. Open the 'server.settings' file using a text editor, like Notepad++.
+9.1. Enter the MySQL server settings, along with a schema name. You may also change the server's port.
+10.1. Re-run the server using 'java -jar AJASS2-Server.jar'. It should run without terminating this time.
+10.1x. Any obvious user-caused errors are shown in console.
+
+* TO RUN CLIENT PROGRAM *
+6.2. To run the client program, navigate to the AJASS2-Client folder in Explorer/Finder.
+7.2. Double-click the JAR file to run it, or run it from a command prompt/terminal for verbose logs.
+8.2. The program will have shown an error and closed. Open the 'client.settings' file using a text editor.
+9.2. Enter the server hostname as well as the server port. The server must be running.
+10.2. Double click the JAR file again to run it (or open it in commmand prompt/terminal).
+10.2x. There should not be any errors past this point.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		Features Completed
@@ -153,7 +181,7 @@ See: Report.pdf
 5. Programmatically creating and processing database and tables 
    in mysql/derby
 
-Estimated marks:   / 60
+Estimated marks:   / 10
 
 Reasoning:
 

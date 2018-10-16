@@ -1,14 +1,11 @@
 package au.edu.swin.ajass.views;
 
 import au.edu.swin.ajass.Utilities;
-import au.edu.swin.ajass.controller.ClientMenuController;
 import au.edu.swin.ajass.enums.OrderState;
 import au.edu.swin.ajass.models.MenuItem;
-import au.edu.swin.ajass.models.Order;
 import au.edu.swin.ajass.models.OrderLocation;
 import au.edu.swin.ajass.models.Table;
 
-import javax.rmi.CORBA.Util;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -20,8 +17,8 @@ import java.awt.*;
  *
  * @author Keagan Foster
  * @author Joshua Skinner
- * @version 1
  * @author 0.1
+ * @version 1
  */
 public class ButtonView implements IView {
 
@@ -192,12 +189,18 @@ public class ButtonView implements IView {
 
             int confirm = JOptionPane.showConfirmDialog(null, "Do you want to proceed for billing order(s)", "Confirmation Dialog", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (confirm == JOptionPane.YES_OPTION) {
+                // Generate receipt before changing stuff.
+                String receipt = main.getController().getMenuController().generateReceipt(toBill);
+
                 // Go through each individual order location, retrieve the order, and prepare it.
                 for (OrderLocation location : toBill)
                     main.getController().getMenuController().updateOrderState(location, OrderState.SERVED, OrderState.BILLED);
 
                 // Show message.
                 JOptionPane.showConfirmDialog(null, "Selected orders billed", "Information", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+
+                // Show receipt.
+                JOptionPane.showMessageDialog(null, receipt, "Receipt", JOptionPane.PLAIN_MESSAGE);
 
                 // Update state!
                 main.updateState(MainView.UIState.UPDATE_ORDERS);

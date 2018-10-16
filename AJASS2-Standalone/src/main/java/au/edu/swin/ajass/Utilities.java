@@ -1,9 +1,13 @@
 package au.edu.swin.ajass;
 
+import au.edu.swin.ajass.controllers.MenuController;
 import au.edu.swin.ajass.models.MenuItem;
 import au.edu.swin.ajass.models.Order;
+import au.edu.swin.ajass.models.OrderLocation;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class is used to store random utility methods
@@ -46,7 +50,7 @@ public final class Utilities {
         result[0] = order.getOrderName();
 
         // Check for individual order
-        if(!order.isGroupOrder){
+        if (!order.isGroupOrder) {
             if (order.getFood() == null && order.getBeverage() != null)
                 // Show beverage only.
                 result[1] = order.getBeverage().getItemName();
@@ -65,14 +69,14 @@ public final class Utilities {
             // Format group orders to display
             List<MenuItem[]> items = order.getItems();
             result[1] = "";
-            for(int i = 0; i < items.size(); i++){
+            for (int i = 0; i < items.size(); i++) {
                 result[1] += "(" + (i + 1) + ") ";
-                if(items.get(i)[0] != null)
+                if (items.get(i)[0] != null)
                     result[1] += items.get(i)[0].getItemName() + ", ";
-                if(items.get(i)[1] != null)
+                if (items.get(i)[1] != null)
                     result[1] += items.get(i)[1].getItemName();
 
-                if(i < items.size() - 1)
+                if (i < items.size() - 1)
                     result[1] += "<br>";
             }
         }

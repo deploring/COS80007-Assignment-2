@@ -32,5 +32,6 @@
 (D5) Implement Database loading
 > D5 Complete
 (D6) Implement custom features
-> Group Orders
+> Group Orders (added)
 > Fault Tolerance (automatic re-opening of connection) (added)
+> D6 Complete

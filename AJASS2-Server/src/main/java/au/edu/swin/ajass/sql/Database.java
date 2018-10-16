@@ -19,7 +19,7 @@ import java.sql.*;
 public class Database {
 
     // Database fields.
-    private final String user, pass, url;
+    private final String user, pass, url, database;
     private Connection connection;
 
     /**
@@ -33,7 +33,8 @@ public class Database {
         // Create database settings.
         this.user = user;
         this.pass = pass;
-        this.url = String.format("jdbc:mysql://%s:%s/%s", hostname, port, database);
+        this.url = String.format("jdbc:mysql://%s:%s/", hostname, port);
+        this.database = database;
 
         // Open the connection.
         connection = open();
@@ -138,6 +139,17 @@ public class Database {
     public void createTables() throws SQLException {
         DatabaseMetaData meta = connection.getMetaData();
 
+        if (!schemaExists()) {
+            System.out.println(">>> Creating Schema...");
+            PreparedStatement schemaCheck = connection.prepareStatement("CREATE DATABASE `" + database + "`");
+            schemaCheck.executeUpdate();
+            schemaCheck.close();
+        }
+
+        PreparedStatement useSchema = connection.prepareStatement("USE `" + database + "`");
+        useSchema.execute();
+        useSchema.close();
+
         // Check if the `menuItems` table exists, and then create it if not.
         ResultSet check1 = meta.getTables(null, null, "menuItems", null);
         if (!check1.next()) {
@@ -180,6 +192,20 @@ public class Database {
             ).executeUpdate();
         }
         check2.close();
+    }
+
+    /**
+     * @return True, if the database exists already.
+     */
+    private boolean schemaExists() throws SQLException {
+        ResultSet resultSet = connection.getMetaData().getCatalogs();
+        while (resultSet.next())
+            if (resultSet.getString(1).equals(database)) {
+                resultSet.close();
+                return true;
+            }
+        resultSet.close();
+        return false;
     }
 
     /**
@@ -278,8 +304,8 @@ public class Database {
             pstmt.setInt(1, tableNumber);
             pstmt.setString(2, OrderState.WAITING.toString());
             pstmt.setString(3, customerName);
-            pstmt.setInt(4, food == null ? -1 : food.getPLU());
-            pstmt.setInt(5, beverage == null ? -1 : beverage.getPLU());
+            pstmt.setInt(4, food == null ? 0 : food.getPLU());
+            pstmt.setInt(5, beverage == null ? 0 : beverage.getPLU());
             pstmt.executeUpdate();
 
             // Get the generated order ID and return that. We need it!

@@ -74,6 +74,7 @@ public class ServerController implements ISocketController {
         } catch (SQLException e) {
             // Database tables were not created.
             System.out.println(String.format("!! Unable to load from database: %s", e.getMessage()));
+            e.printStackTrace();
             System.exit(0);
             return;
         }

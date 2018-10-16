@@ -218,9 +218,10 @@ public class OrderStatusView implements IView {
         // Generate Order Location data based on data in the table.
         OrderLocation[] result = new OrderLocation[tableOfInterest.getSelectedRows().length];
         for (int i = 0; i < tableOfInterest.getSelectedRows().length; i++) {
+            int trueIndex = tableOfInterest.getSelectedRows().length - 1 - i;
             // Retrieve this Order's position in its linked list, and also its table.
-            int orderPosition = Integer.parseInt(String.valueOf(tableOfInterest.getModel().getValueAt(tableOfInterest.getSelectedRow(), 1)));
-            int tableNumber = Integer.parseInt(String.valueOf(tableOfInterest.getModel().getValueAt(tableOfInterest.getSelectedRows()[i], 2)));
+            int orderPosition = Integer.parseInt(String.valueOf(tableOfInterest.getModel().getValueAt(tableOfInterest.getSelectedRows()[trueIndex], 1)));
+            int tableNumber = Integer.parseInt(String.valueOf(tableOfInterest.getModel().getValueAt(tableOfInterest.getSelectedRows()[trueIndex], 2)));
             result[i] = new OrderLocation(tableNumber, orderPosition);
         }
 

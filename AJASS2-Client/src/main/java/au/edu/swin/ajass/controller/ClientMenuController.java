@@ -11,8 +11,10 @@ import au.edu.swin.ajass.models.OrderLocation;
 import au.edu.swin.ajass.models.Table;
 import au.edu.swin.ajass.thread.ServerHandlerThread;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 /**
@@ -175,5 +177,54 @@ public final class ClientMenuController {
 
         // Add to the List that contains Menu Items of a specific food type and meal type.
         menuItems.get(foodType).get(mealType).add(toPlace);
+    }
+
+    /**
+     * @param orders An array of orders that have been billed.
+     * @return A receipt for the orders billed.
+     */
+    public String generateReceipt(OrderLocation[] orders) {
+        StringBuilder result = new StringBuilder();
+        result.append("Receipt for ").append(orders.length).append(" Order(s):\n\n");
+
+        AtomicInteger currentOrder = new AtomicInteger(0);
+        AtomicInteger totalPrice = new AtomicInteger(0);
+        Arrays.stream(orders).forEach(ol -> {
+            Order o = getTable(ol.getTable()).getOrder(OrderState.SERVED, ol.getPosition());
+
+            int orderIndex = currentOrder.addAndGet(1);
+            double orderPrice = 0, orderEnergy = 0, orderProtein = 0, orderCarbs = 0, orderFat = 0, orderFiber = 0;
+
+            result.append("Order #").append(orderIndex).append(":\n");
+
+            if (o.getFood() != null) {
+                result.append(o.getFood().getItemName()).append(" ($").append((int) o.getFood().getPrice()).append(".00)\n");
+                totalPrice.addAndGet((int) o.getFood().getPrice());
+                orderPrice += o.getFood().getPrice();
+                orderEnergy += o.getFood().getEnergy();
+                orderProtein += o.getFood().getProtein();
+                orderCarbs += o.getFood().getCarbs();
+                orderFat += o.getFood().getFat();
+                orderFiber += o.getFood().getFibre();
+            }
+
+            if (o.getBeverage() != null) {
+                result.append(o.getBeverage().getItemName()).append(" ($").append((int) o.getBeverage().getPrice()).append(".00)\n");
+                totalPrice.addAndGet((int) o.getBeverage().getPrice());
+                orderPrice += o.getBeverage().getPrice();
+                orderEnergy += o.getBeverage().getEnergy();
+                orderProtein += o.getBeverage().getProtein();
+                orderCarbs += o.getBeverage().getCarbs();
+                orderFat += o.getBeverage().getFat();
+                orderFiber += o.getBeverage().getFibre();
+            }
+
+            result.append("Total Nutritional Information for Order:\n");
+            result.append("Energy: ").append(orderEnergy).append("kJ, Protein: ").append(orderProtein).append("g, Carbs: ").append(orderCarbs).append("g, Fat: ").append(orderFat).append("g, Fiber: ").append(orderFiber).append("g\n");
+            result.append("Order Total: $").append(((int) orderPrice)).append(".00\n\n");
+        });
+
+        result.append("Total for All ").append(orders.length).append(" Orders: $").append(totalPrice.get()).append(".00\nThank You!");
+        return result.toString();
     }
 }
