@@ -146,9 +146,7 @@ public class Database {
             schemaCheck.close();
         }
 
-        PreparedStatement useSchema = connection.prepareStatement("USE `" + database + "`");
-        useSchema.execute();
-        useSchema.close();
+        connection.setCatalog(database);
 
         // Check if the `menuItems` table exists, and then create it if not.
         ResultSet check1 = meta.getTables(null, null, "menuItems", null);
