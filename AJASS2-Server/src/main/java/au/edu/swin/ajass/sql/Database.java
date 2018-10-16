@@ -146,10 +146,11 @@ public class Database {
             schemaCheck.close();
         }
 
+        // Use this database once we know it exists.
         connection.setCatalog(database);
 
         // Check if the `menuItems` table exists, and then create it if not.
-        ResultSet check1 = meta.getTables(null, null, "menuItems", null);
+        ResultSet check1 = meta.getTables(database, null, "menuItems", null);
         if (!check1.next()) {
             System.out.println(">>> Creating `menuItems` table...");
             connection.prepareStatement(
@@ -173,7 +174,7 @@ public class Database {
         check1.close();
 
         // Check if the `orders` table exists, and then create it if not.
-        ResultSet check2 = meta.getTables(null, null, "orders", null);
+        ResultSet check2 = meta.getTables(database, null, "orders", null);
         if (!check2.next()) {
             System.out.println(">>> Creating `orders` table...");
             connection.prepareStatement(
