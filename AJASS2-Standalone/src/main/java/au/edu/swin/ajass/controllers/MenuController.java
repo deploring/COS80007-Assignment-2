@@ -145,34 +145,79 @@ public final class MenuController {
             Order o = getTable(ol.getTable()).getOrder(OrderState.SERVED, ol.getPosition());
 
             int orderIndex = currentOrder.addAndGet(1);
+            // Item information variables for single order
             double orderPrice = 0, orderEnergy = 0, orderProtein = 0, orderCarbs = 0, orderFat = 0, orderFiber = 0;
+            // Item information variables for group order
+            double gOrderPrice = 0, gOrderEnergy = 0, gOrderProtein = 0, gOrderCarbs = 0, gOrderFat = 0, gOrderFiber = 0;
 
             result.append("Order #").append(orderIndex).append(":\n");
 
-            if (o.getFood() != null) {
-                result.append(o.getFood().getItemName()).append(" ($").append((int) o.getFood().getPrice()).append(".00)\n");
-                totalPrice.addAndGet((int) o.getFood().getPrice());
-                orderPrice += o.getFood().getPrice();
-                orderEnergy += o.getFood().getEnergy();
-                orderProtein += o.getFood().getProtein();
-                orderCarbs += o.getFood().getCarbs();
-                orderFat += o.getFood().getFat();
-                orderFiber += o.getFood().getFibre();
+            List<MenuItem[]> items = o.getItems();
+            // Loops through all items if order is a group order
+            if(items != null){
+                for(int i = 0; i < o.getOrderSize(); i++){
+                    result.append("Item (").append(i).append("): \n");
+                    gOrderPrice = 0;
+                    gOrderEnergy = 0;
+                    gOrderProtein = 0;
+                    gOrderCarbs = 0;
+                    gOrderFat = 0;
+                    gOrderFiber = 0;
+
+                    if(items.get(i)[0] != null){
+                        result.append(items.get(i)[0].getItemName()).append(" ($").append((int) items.get(i)[0].getPrice()).append(".00)\n");
+                        totalPrice.addAndGet((int) items.get(i)[0].getPrice());
+                        gOrderPrice += items.get(i)[0].getPrice();
+                        gOrderEnergy += items.get(i)[0].getEnergy();
+                        gOrderProtein += items.get(i)[0].getProtein();
+                        gOrderCarbs += items.get(i)[0].getCarbs();
+                        gOrderFat += items.get(i)[0].getFat();
+                        gOrderFiber += items.get(i)[0].getFibre();
+                    }
+
+                    if(items.get(i)[1] != null){
+                        result.append(items.get(i)[1].getItemName()).append(" ($").append((int) items.get(i)[1].getPrice()).append(".00)\n");
+                        totalPrice.addAndGet((int) items.get(i)[1].getPrice());
+                        gOrderPrice += items.get(i)[1].getPrice();
+                        gOrderEnergy += items.get(i)[1].getEnergy();
+                        gOrderProtein += items.get(i)[1].getProtein();
+                        gOrderCarbs += items.get(i)[1].getCarbs();
+                        gOrderFat += items.get(i)[1].getFat();
+                        gOrderFiber += items.get(i)[1].getFibre();
+                    }
+
+                    result.append("Total Nutritional Information for Item ").append(i).append(" \n");
+                    result.append("Energy: ").append(orderEnergy).append("kJ, Protein: ").append(orderProtein).append("g, Carbs: ").append(orderCarbs).append("g, Fat: ").append(orderFat).append("g, Fiber: ").append(orderFiber).append("g\n");
+                }
+            }
+            // Dislays information for single order
+            else {
+                if (o.getFood() != null) {
+                    result.append(o.getFood().getItemName()).append(" ($").append((int) o.getFood().getPrice()).append(".00)\n");
+                    totalPrice.addAndGet((int) o.getFood().getPrice());
+                    orderPrice += o.getFood().getPrice();
+                    orderEnergy += o.getFood().getEnergy();
+                    orderProtein += o.getFood().getProtein();
+                    orderCarbs += o.getFood().getCarbs();
+                    orderFat += o.getFood().getFat();
+                    orderFiber += o.getFood().getFibre();
+                }
+
+                if (o.getBeverage() != null) {
+                    result.append(o.getBeverage().getItemName()).append(" ($").append((int) o.getBeverage().getPrice()).append(".00)\n");
+                    totalPrice.addAndGet((int) o.getBeverage().getPrice());
+                    orderPrice += o.getBeverage().getPrice();
+                    orderEnergy += o.getBeverage().getEnergy();
+                    orderProtein += o.getBeverage().getProtein();
+                    orderCarbs += o.getBeverage().getCarbs();
+                    orderFat += o.getBeverage().getFat();
+                    orderFiber += o.getBeverage().getFibre();
+                }
+
+                result.append("Total Nutritional Information for Order:\n");
+                result.append("Energy: ").append(orderEnergy).append("kJ, Protein: ").append(orderProtein).append("g, Carbs: ").append(orderCarbs).append("g, Fat: ").append(orderFat).append("g, Fiber: ").append(orderFiber).append("g\n");
             }
 
-            if (o.getBeverage() != null) {
-                result.append(o.getBeverage().getItemName()).append(" ($").append((int) o.getBeverage().getPrice()).append(".00)\n");
-                totalPrice.addAndGet((int) o.getBeverage().getPrice());
-                orderPrice += o.getBeverage().getPrice();
-                orderEnergy += o.getBeverage().getEnergy();
-                orderProtein += o.getBeverage().getProtein();
-                orderCarbs += o.getBeverage().getCarbs();
-                orderFat += o.getBeverage().getFat();
-                orderFiber += o.getBeverage().getFibre();
-            }
-
-            result.append("Total Nutritional Information for Order:\n");
-            result.append("Energy: ").append(orderEnergy).append("kJ, Protein: ").append(orderProtein).append("g, Carbs: ").append(orderCarbs).append("g, Fat: ").append(orderFat).append("g, Fiber: ").append(orderFiber).append("g\n");
             result.append("Order Total: $").append(((int) orderPrice)).append(".00\n\n");
         });
 
