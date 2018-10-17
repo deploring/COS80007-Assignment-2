@@ -9,6 +9,8 @@ import au.edu.swin.ajass.models.MenuItem;
 import au.edu.swin.ajass.models.Order;
 import au.edu.swin.ajass.models.Table;
 
+import javax.swing.*;
+
 /**
  * Handles received messages from the server that
  * have been placed in the ClientController queue.
@@ -114,6 +116,11 @@ public class ServerHandlerThread implements Runnable {
 
                             // Force UI elements to update.
                             client.getMainView().getOrderStatusView().updateTables();
+                            break;
+                        case SERVER_DIALOG:
+                            // Someone wrote something on console.
+                            String message = (String) client.takeMessage();
+                            JOptionPane.showMessageDialog(null, message, "Message from Server", JOptionPane.PLAIN_MESSAGE);
                             break;
                         default:
                             // The client has sent an invalid Communication.
