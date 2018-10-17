@@ -26,7 +26,7 @@ public class Main {
         String input = "";
 
         while (!input.toLowerCase().equals("quit")) {
-            input = scanner.next();
+            input = scanner.nextLine();
             if (!input.toLowerCase().equals("quit")) {
                 controller.writeToAllClients(Communication.SERVER_DIALOG);
                 controller.writeToAllClients(input);
