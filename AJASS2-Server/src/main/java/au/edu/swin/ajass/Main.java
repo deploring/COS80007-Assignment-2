@@ -27,10 +27,13 @@ public class Main {
 
         while (!input.toLowerCase().equals("quit")) {
             input = scanner.next();
-
-            String toSend = input.substring(4);
-            controller.writeToAllClients(Communication.SERVER_DIALOG);
-            controller.writeToAllClients(toSend);
+            if (!input.toLowerCase().equals("quit")) {
+                controller.writeToAllClients(Communication.SERVER_DIALOG);
+                controller.writeToAllClients(input);
+            }
         }
+
+        // Exit after.
+        System.exit(0);
     }
 }
