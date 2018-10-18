@@ -24,7 +24,9 @@
 > Week 10
 
 (D1) Explain VPS usage in report
+> D1 Complete
 (D2) Picture of multiple clients, acting as different roles.
+> D2 Complete
 (D3) Create table creation statements.
 > D3 Complete
 (D4) Implement Database saving
@@ -35,3 +37,8 @@
 > Group Orders (added)
 > Fault Tolerance (automatic re-opening of connection) (added)
 > D6 Complete
+
+> Week 11
+
+(D1) Finish Report
+> D1 Complete
