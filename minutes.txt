@@ -42,3 +42,5 @@
 
 (D1) Finish Report
 > D1 Complete
+(D2) Do a Video
+> D2 Complete
