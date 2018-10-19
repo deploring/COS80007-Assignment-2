@@ -29,8 +29,20 @@ Subject ID:	COS80007
 		Undergraduate
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        Demonstration Video Link
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Link: https://youtu.be/S4giQzA4mwM
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		Instructions to run the assignment
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+!!! If you do not want to compile the assignment JARs yourself !!!
+A pre-compiled instance of each three prototypes are included in the base directory.
+Ignore steps 1-6 if you are using the pre-compiled JARs, they are irrelevant.
+
+=========================================================================
 
 1. Download and Install "Maven". Follow their instructions for installation.
     - http://maven.apache.org/install.html
@@ -40,7 +52,7 @@ Subject ID:	COS80007
 5. You should receive a "reactor summary" showing the four different modules successfully compiling.
 
 * TO RUN SERVER PROGRAM*
-6.1. To run the server program, navigate to the AJASS2-Server folder in a command prompt/terminal.
+6.1. To run the server program, navigate to the AJASS2-Server/target folder in a command prompt/terminal.
 7.1. Run the server using 'java -jar AJASS2-Server.jar'. It will terminate itself.
 8.1. Open the 'server.settings' file using a text editor, like Notepad++.
 9.1. Enter the MySQL server settings, along with a schema name. You may also change the server's port.
@@ -48,12 +60,16 @@ Subject ID:	COS80007
 10.1x. Any obvious user-caused errors are shown in console.
 
 * TO RUN CLIENT PROGRAM *
-6.2. To run the client program, navigate to the AJASS2-Client folder in Explorer/Finder.
+6.2. To run the client program, navigate to the AJASS2-Client/target folder in Explorer/Finder.
 7.2. Double-click the JAR file to run it, or run it from a command prompt/terminal for verbose logs.
 8.2. The program will have shown an error and closed. Open the 'client.settings' file using a text editor.
 9.2. Enter the server hostname as well as the server port. The server must be running.
 10.2. Double click the JAR file again to run it (or open it in command prompt/terminal).
 10.2x. There should not be any errors past this point.
+
+* TO RUN STANDALONE PROGRAM *
+6.3. To run the standalone program, navigate to the AJASS2-Standalone/target folder in Explorer/Finder.
+6.4. Double click the AJASS2-Standalone.jar to run.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		Features Completed
@@ -210,6 +226,8 @@ the combo boxes they are taken from here.
 AJASS2-Standalone -> MenuItems
 AJASS2-Server -> MenuItems
 
+See: Report.pdf
+
 -------------------------------------------------------------------------
 7. Relate the implementation of the standalone version with Model 
    Controller View (MVC)
@@ -311,7 +329,7 @@ Reasoning:
 All classes and methods have been meaningfully documented.
 
 -------------------------------------------------------------------------
-14. Implement an “About” dialog activated from the menu
+14. Implement an ï¿½Aboutï¿½ dialog activated from the menu
 
 Estimated marks: -  / -
 
